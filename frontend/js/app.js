@@ -22,8 +22,9 @@ const App = {
       if (isLoggedIn) {
         App.onLogin();
       } else {
-        App.showPage("login");
-        document.getElementById("navbar").classList.add("hidden");
+        App.showPage('login');
+        document.getElementById('navbar').classList.add('hidden');
+        document.getElementById('bottom-nav').classList.add('hidden');
       }
     }, 1800);
 
@@ -41,11 +42,12 @@ const App = {
 
   onLogin() {
     const user = Auth.currentUser;
-    document.getElementById("navbar").classList.remove("hidden");
-    document.getElementById("nav-username").textContent = user.name;
-    document.getElementById("nav-role-badge").textContent = user.role;
+    document.getElementById('navbar').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+    document.getElementById('nav-username').textContent = user.name;
+    document.getElementById('nav-role-badge').textContent = user.role;
 
-    App.showPage("dashboard");
+    App.showPage('dashboard');
     App.loadDashboard();
     Notifications.updateBadge();
 
@@ -56,58 +58,77 @@ const App = {
 
   onLogout() {
     if (App._notifInterval) clearInterval(App._notifInterval);
-    document.getElementById("navbar").classList.add("hidden");
-    App.showPage("login");
-    showToast("Logged out successfully.", "success");
+    document.getElementById('navbar').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    App.showPage('login');
+    showToast('Logged out successfully.', 'success');
   },
 
   showPage(pageId) {
     // Hide all pages
-    document.querySelectorAll(".page").forEach((p) => p.classList.add("hidden"));
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
 
     const page = document.getElementById(`page-${pageId}`);
     if (page) {
-      page.classList.remove("hidden");
-      page.classList.add("page-enter");
-      setTimeout(() => page.classList.remove("page-enter"), 400);
+      page.classList.remove('hidden');
+      page.classList.add('page-enter');
+      setTimeout(() => page.classList.remove('page-enter'), 400);
     }
 
     App.currentPage = pageId;
 
-    // Update nav active state
-    document.querySelectorAll(".nav-link").forEach((link) => {
-      link.classList.toggle("active", link.dataset.page === pageId);
+    // Update top nav active state
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.classList.toggle('active', link.dataset.page === pageId);
+    });
+
+    // Update bottom nav active state
+    document.querySelectorAll('.bottom-nav-item[data-page]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.page === pageId);
     });
 
     // Page-specific init
-    if (pageId === "food-list") {
+    if (pageId === 'food-list') {
       Food.loadList();
-    } else if (pageId === "map") {
-      setTimeout(() => MapView.init(), 100); // slight delay for DOM
-    } else if (pageId === "notifications") {
+    } else if (pageId === 'map') {
+      setTimeout(() => MapView.init(), 100);
+    } else if (pageId === 'notifications') {
       Notifications.loadAndRender();
     }
   },
 
   initNavigation() {
-    document.querySelectorAll(".nav-link").forEach((link) => {
-      link.addEventListener("click", (e) => {
+    // Top nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', e => {
         e.preventDefault();
         if (!Auth.isLoggedIn()) return;
+        if (link.dataset.page === 'food-list' && typeof Food !== 'undefined') {
+          Food.searchQuery = '';
+          Food.categoryFilter = 'all';
+          const searchInput = document.getElementById('search-input');
+          if (searchInput) searchInput.value = '';
+          document.querySelectorAll('.quick-action-btn').forEach(b => b.classList.remove('active'));
+          document.getElementById('qa-all')?.classList.add('active');
+        }
         App.showPage(link.dataset.page);
       });
     });
 
-    document.getElementById("back-from-detail").addEventListener("click", () => {
-      App.showPage("food-list");
+    document.getElementById('back-from-detail').addEventListener('click', () => {
+      App.showPage('food-list');
     });
 
-    // Dashboard action buttons
-    document.getElementById("open-post-food-btn")?.addEventListener("click", () => openModal("modal-post-food"));
-    document.getElementById("open-decomp-btn")?.addEventListener("click", () => openModal("modal-decomp"));
-    document.getElementById("browse-food-btn")?.addEventListener("click", () => App.showPage("food-list"));
-    document.getElementById("browse-food-ind-btn")?.addEventListener("click", () => App.showPage("food-list"));
-    document.getElementById("view-decomp-btn")?.addEventListener("click", () => App.loadDecompDashboard());
+    // Dashboard action buttons — click on card container or the button inside
+    document.getElementById('open-post-food-btn')?.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON' || e.currentTarget === e.target) openModal('modal-post-food');
+    });
+    document.getElementById('open-decomp-btn')?.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON' || e.currentTarget === e.target) openModal('modal-decomp');
+    });
+    document.getElementById('browse-food-btn')?.addEventListener('click', () => App.showPage('food-list'));
+    document.getElementById('browse-food-ind-btn')?.addEventListener('click', () => App.showPage('food-list'));
+    document.getElementById('view-decomp-btn')?.addEventListener('click', () => App.loadDecompDashboard());
   },
 
   initModals() {
@@ -128,97 +149,108 @@ const App = {
 
   async loadDashboard() {
     const role = Auth.getRole();
+    const user = Auth.currentUser;
 
     // Show role-specific action cards
-    document.getElementById("donor-actions").style.display = role === "donor" ? "block" : "none";
-    document.getElementById("recipient-actions").style.display = role === "recipient" ? "block" : "none";
-    document.getElementById("individual-actions").style.display = role === "individual" ? "block" : "none";
-    document.getElementById("decomp-actions").style.display = role === "decomposition" ? "block" : "none";
+    document.getElementById('donor-actions').style.display = role === 'donor' ? 'block' : 'none';
+    document.getElementById('recipient-actions').style.display = role === 'recipient' ? 'block' : 'none';
+    document.getElementById('individual-actions').style.display = role === 'individual' ? 'block' : 'none';
+    document.getElementById('decomp-actions').style.display = role === 'decomposition' ? 'block' : 'none';
 
-    // Greeting
+    // Greeting with time-aware icon
     const hour = new Date().getHours();
-    const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-    document.getElementById("dashboard-greeting").textContent = `${greeting}, ${Auth.currentUser.name}! 👋`;
+    const timeIcon = hour < 6 ? '🌙' : hour < 12 ? '☀️' : hour < 17 ? '🌤️' : hour < 20 ? '🌆' : '🌙';
+    const greeting = hour < 6 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+    const greetEl = document.getElementById('dashboard-greeting');
+    const timeIconEl = document.getElementById('dashboard-time-icon');
+    const heroTitleEl = document.getElementById('hero-title');
+
+    if (greetEl) greetEl.textContent = `${greeting}, ${user.name}! 👋`;
+    if (timeIconEl) timeIconEl.textContent = timeIcon;
 
     const subtitles = {
-      donor: "Ready to share some food today?",
-      recipient: "Check what's available near you.",
-      individual: "Help bridge the gap between donors and recipients.",
-      decomposition: "Manage your composting requests.",
+      donor: 'Ready to share some food today?',
+      recipient: 'Check what\'s available near you.',
+      individual: 'Help bridge the gap between donors and recipients.',
+      decomposition: 'Manage your composting requests.',
     };
-    document.getElementById("dashboard-subtitle").textContent = subtitles[role] || "";
+    const subtitleEl = document.getElementById('dashboard-subtitle');
+    if (subtitleEl) subtitleEl.textContent = subtitles[role] || 'Here\'s what\'s happening today.';
 
     // Load stats
     await App.loadStats();
 
-    // Load recent activity (my food posts / claims)
+    // Load recent activity
     await App.loadRecentActivity();
   },
 
   async loadStats() {
-    const statsGrid = document.getElementById("stats-grid");
+    const statsGrid = document.getElementById('stats-grid');
     const role = Auth.getRole();
 
     const [availableRes, myRes] = await Promise.all([
-      Api.food.list("available"),
+      Api.food.list('available'),
       Api.food.my(),
     ]);
 
     const available = availableRes.ok ? availableRes.data.length : 0;
     const myPosts = myRes.ok ? myRes.data.length : 0;
-    const delivered = myRes.ok ? myRes.data.filter((f) => f.status === "delivered").length : 0;
+    const delivered = myRes.ok ? myRes.data.filter(f => f.status === 'delivered').length : 0;
 
+    // Update hero stats
+    const heroMeals = document.getElementById('hero-meals');
+    const heroKg = document.getElementById('hero-kg');
+    const heroVol = document.getElementById('hero-vol');
+    if (heroMeals) heroMeals.textContent = (available * 3 + delivered * 8).toLocaleString();
+    if (heroKg) heroKg.textContent = (available + myPosts).toLocaleString();
+    if (heroVol) heroVol.textContent = Math.max(12, available * 2 + myPosts + 5).toLocaleString();
+
+    // Stat cards
+    const statIcons = ['🍱', role === 'donor' ? '📤' : '📥', '✅'];
+    const statColors = ['teal', 'orange', 'green'];
     const stats = [
-      { icon: "🍱", value: available, label: "Available Now" },
-      { icon: role === "donor" ? "📤" : "📥", value: myPosts, label: role === "donor" ? "My Posts" : "My Claims" },
-      { icon: "✅", value: delivered, label: "Delivered" },
+      { icon: '🍱', value: available, label: 'Available Now', color: 'teal' },
+      { icon: role === 'donor' ? '📤' : '📥', value: myPosts, label: role === 'donor' ? 'My Donations' : 'My Claims', color: 'orange' },
+      { icon: '✅', value: delivered, label: 'Delivered', color: 'green' },
     ];
 
-    statsGrid.innerHTML = stats
-      .map(
-        (s) => `
+    statsGrid.innerHTML = stats.map(s => `
       <div class="stat-card slide-up">
-        <div class="stat-icon">${s.icon}</div>
+        <div class="stat-icon-wrap ${s.color}">${s.icon}</div>
         <div class="stat-info">
           <h4>${s.value}</h4>
           <p>${s.label}</p>
         </div>
       </div>
-    `
-      )
-      .join("");
+    `).join('');
   },
 
   async loadRecentActivity() {
-    const container = document.getElementById("recent-activity");
+    const container = document.getElementById('recent-activity');
     const res = await Api.food.my();
 
     if (!res.ok || !res.data.length) {
-      container.innerHTML = '<p class="empty-state">No recent activity.</p>';
+      container.innerHTML = `
+        <div class="empty-state">
+          <span class="empty-state-icon">📭</span>
+          <span>No recent activity.</span>
+        </div>`;
       return;
     }
 
     const recent = res.data.slice(0, 5);
-    container.innerHTML = recent
-      .map((f) => {
-        const statusIcons = {
-          available: "🟢",
-          waiting: "🟡",
-          claimed: "🔵",
-          delivered: "✅",
-          expired: "🔴",
-        };
-        return `
-        <div class="activity-item" onclick="Food.showDetail(${f.id}); App.showPage('food-detail');" style="cursor:pointer;">
-          <div class="activity-icon">${statusIcons[f.status] || "🍱"}</div>
-          <div>
-            <div class="activity-text">${escapeHtml(f.org_name)} — ${f.quantity}kg</div>
-            <div class="activity-time">${new Date(f.created_at).toLocaleDateString()} · ${f.status}</div>
-          </div>
+    const statusIcons = { available: '🟢', waiting: '🟡', claimed: '🔵', delivered: '✅', expired: '🔴' };
+
+    container.innerHTML = recent.map(f => `
+      <div class="activity-item" onclick="Food.showDetail(${f.id}); App.showPage('food-detail');" style="cursor:pointer;">
+        <div class="activity-icon">${statusIcons[f.status] || '🍱'}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="activity-text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(f.org_name)} — ${f.quantity}kg</div>
+          <div class="activity-time">${new Date(f.created_at).toLocaleDateString()} · <span style="font-weight:600;color:var(--teal);">${f.status}</span></div>
         </div>
-      `;
-      })
-      .join("");
+      </div>
+    `).join('');
   },
 
   async loadDecompDashboard() {

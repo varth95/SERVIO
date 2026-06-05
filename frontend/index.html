@@ -4,13 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Servio — Connect. Share. Nourish.</title>
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/animations.css" />
+  <meta name="description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <!-- Leaflet for maps (free, no API key needed for basic maps) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
 </head>
 <body>
 
@@ -27,32 +34,34 @@
   <!-- ===== APP WRAPPER ===== -->
   <div id="app" class="app hidden">
 
-    <!-- ===== NAVBAR ===== -->
+    <!-- ===== TOP NAVBAR ===== -->
     <nav class="navbar" id="navbar">
       <div class="nav-brand">
         <span class="logo-icon">🍱</span>
         <span class="brand-name">Servio</span>
       </div>
       <div class="nav-links" id="nav-links">
-        <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
-        <a href="#" class="nav-link" data-page="food-list">Browse Food</a>
-        <a href="#" class="nav-link" data-page="map">Map</a>
-        <a href="#" class="nav-link" data-page="notifications">
-          Notifications
+        <a href="#" class="nav-link active" data-page="dashboard" id="nl-dashboard">🏠 Home</a>
+        <a href="#" class="nav-link" data-page="food-list" id="nl-food-list">🍱 Donations</a>
+        <a href="#" class="nav-link" data-page="map" id="nl-map">📍 Nearby</a>
+        <a href="#" class="nav-link" data-page="notifications" id="nl-notifications">
+          🔔 Alerts
           <span class="notif-badge hidden" id="notif-badge">0</span>
         </a>
       </div>
       <div class="nav-user" id="nav-user">
         <span id="nav-username">Guest</span>
         <span class="role-badge" id="nav-role-badge">—</span>
-        <button class="btn btn-outline btn-sm" id="logout-btn">Logout</button>
+        <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
       </div>
     </nav>
 
     <!-- ===== PAGE CONTAINER ===== -->
     <main class="page-container" id="page-container">
 
-      <!-- LOGIN PAGE -->
+      <!-- ─────────────────────────────── -->
+      <!--           LOGIN PAGE            -->
+      <!-- ─────────────────────────────── -->
       <section class="page" id="page-login">
         <div class="auth-wrapper">
           <div class="auth-card slide-up">
@@ -70,29 +79,29 @@
             <form id="login-form" class="auth-form">
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="login-email" placeholder="you@example.com" required />
+                <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="login-password" placeholder="••••••••" required />
+                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
               </div>
               <div class="form-error hidden" id="login-error"></div>
-              <button type="submit" class="btn btn-primary btn-full">Login</button>
+              <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">Login →</button>
             </form>
 
             <!-- Register Form -->
             <form id="register-form" class="auth-form hidden">
               <div class="form-group">
                 <label>Full Name / Organization</label>
-                <input type="text" id="reg-name" placeholder="Your name or org name" required />
+                <input type="text" id="reg-name" placeholder="Your name or org name" required autocomplete="name" />
               </div>
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="reg-email" placeholder="you@example.com" required />
+                <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email" />
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="reg-password" placeholder="Min 6 characters" required />
+                <input type="password" id="reg-password" placeholder="Min 6 characters" required autocomplete="new-password" />
               </div>
               <div class="form-group">
                 <label>Role</label>
@@ -106,138 +115,320 @@
               </div>
               <div class="form-group" id="reg-phone-group">
                 <label>Phone Number</label>
-                <input type="tel" id="reg-phone" placeholder="+91 XXXXX XXXXX" />
+                <input type="tel" id="reg-phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel" />
               </div>
               <div class="form-group">
                 <label>Address</label>
-                <input type="text" id="reg-address" placeholder="Your address" />
+                <input type="text" id="reg-address" placeholder="Your address" autocomplete="street-address" />
               </div>
               <div class="form-group" id="reg-cert-group" style="display:none">
                 <label>Business Certificate <span class="required">*</span></label>
                 <div class="file-upload-area" id="cert-upload-area">
-                  <span>📄 Click to upload or drag & drop</span>
+                  <span>📄 Click to upload or drag &amp; drop</span>
                   <small>PNG, JPG, or PDF</small>
                   <input type="file" id="reg-certificate" accept=".png,.jpg,.jpeg,.pdf" />
                 </div>
                 <span class="file-name" id="cert-file-name"></span>
               </div>
-              <button type="button" class="btn btn-secondary btn-sm" id="get-location-btn">
+              <button type="button" class="btn btn-ghost btn-sm" id="get-location-btn" style="margin-bottom:16px;">
                 📍 Use My Location
               </button>
               <input type="hidden" id="reg-lat" />
               <input type="hidden" id="reg-lon" />
               <div class="form-error hidden" id="reg-error"></div>
               <div class="form-success hidden" id="reg-success"></div>
-              <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+              <button type="submit" class="btn btn-primary btn-full" id="reg-submit-btn">Create Account →</button>
             </form>
           </div>
         </div>
       </section>
 
-      <!-- DASHBOARD PAGE -->
+      <!-- ─────────────────────────────── -->
+      <!--         DASHBOARD PAGE          -->
+      <!-- ─────────────────────────────── -->
       <section class="page hidden" id="page-dashboard">
         <div class="dashboard-wrapper">
-          <div class="dashboard-header slide-up">
-            <h2 id="dashboard-greeting">Welcome back!</h2>
-            <p id="dashboard-subtitle">Here's what's happening today.</p>
-          </div>
-          <div class="stats-grid" id="stats-grid"></div>
-          <div class="dashboard-content">
-            <div class="dashboard-main">
-              <div class="card" id="donor-actions" style="display:none">
-                <h3>Post Surplus Food</h3>
-                <p>Have leftover food? Post it now and help someone in need.</p>
-                <button class="btn btn-primary" id="open-post-food-btn">🍱 Post Food</button>
-                <button class="btn btn-outline" id="open-decomp-btn">♻️ Send for Composting</button>
+
+          <!-- Hero Card -->
+          <div class="hero-card slide-up">
+            <div class="hero-content">
+              <div class="hero-greeting">
+                <span id="dashboard-time-icon">☀️</span>
+                <span id="dashboard-greeting">Welcome back!</span>
               </div>
-              <div class="card" id="recipient-actions" style="display:none">
-                <h3>Available Food Near You</h3>
-                <p>Browse and claim available food donations.</p>
-                <button class="btn btn-primary" id="browse-food-btn">🔍 Browse Food</button>
-              </div>
-              <div class="card" id="individual-actions" style="display:none">
-                <h3>Help Deliver Food</h3>
-                <p>Volunteer to pick up and deliver food to those in need.</p>
-                <button class="btn btn-primary" id="browse-food-ind-btn">🚚 Find Food to Deliver</button>
-              </div>
-              <div class="card" id="decomp-actions" style="display:none">
-                <h3>Decomposition Requests</h3>
-                <p>View and manage incoming composting requests.</p>
-                <button class="btn btn-primary" id="view-decomp-btn">♻️ View Requests</button>
+              <h1 class="hero-title" id="hero-title">Together we fight<br>food waste 💚</h1>
+              <p class="hero-subtitle" id="dashboard-subtitle">Here's what's happening today.</p>
+              <div class="hero-stats">
+                <div class="hero-stat">
+                  <span class="hero-stat-val" id="hero-meals">2,450</span>
+                  <span class="hero-stat-lbl">Meals Saved</span>
+                </div>
+                <div class="hero-stat">
+                  <span class="hero-stat-val" id="hero-kg">840</span>
+                  <span class="hero-stat-lbl">kg Rescued</span>
+                </div>
+                <div class="hero-stat">
+                  <span class="hero-stat-val" id="hero-vol">128</span>
+                  <span class="hero-stat-lbl">Volunteers</span>
+                </div>
               </div>
             </div>
+            <div class="hero-illustration">
+              <img src="hero_donation.png" alt="Community food donation illustration" />
+            </div>
+          </div>
+
+          <!-- Search -->
+          <div class="search-section slide-up">
+            <div class="search-bar" id="search-bar">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" placeholder="Search food donations near you…" autocomplete="off" />
+            </div>
+          </div>
+
+          <!-- Quick Categories -->
+          <div class="slide-up" style="margin-bottom: 24px;">
+            <div class="section-header">
+              <span class="section-title">Browse by Category</span>
+              <a href="#" class="section-link" data-page="food-list">See all →</a>
+            </div>
+            <div class="quick-actions-grid">
+              <button class="quick-action-btn" data-category="all" id="qa-all">
+                <div class="quick-action-icon">🍱</div>
+                <span class="quick-action-label">All Food</span>
+              </button>
+              <button class="quick-action-btn" data-category="meals" id="qa-meals">
+                <div class="quick-action-icon">🍛</div>
+                <span class="quick-action-label">Meals</span>
+              </button>
+              <button class="quick-action-btn" data-category="bakery" id="qa-bakery">
+                <div class="quick-action-icon">🍞</div>
+                <span class="quick-action-label">Bakery</span>
+              </button>
+              <button class="quick-action-btn" data-category="beverages" id="qa-bev">
+                <div class="quick-action-icon">🥤</div>
+                <span class="quick-action-label">Beverages</span>
+              </button>
+              <button class="quick-action-btn" data-category="fruits" id="qa-fruits">
+                <div class="quick-action-icon">🍎</div>
+                <span class="quick-action-label">Fruits</span>
+              </button>
+              <button class="quick-action-btn" data-category="vegetables" id="qa-veg">
+                <div class="quick-action-icon">🥬</div>
+                <span class="quick-action-label">Vegetables</span>
+              </button>
+              <button class="quick-action-btn" data-category="surplus" id="qa-surplus">
+                <div class="quick-action-icon">📦</div>
+                <span class="quick-action-label">Surplus</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="stats-grid slide-up" id="stats-grid"></div>
+
+          <!-- Role Action Cards -->
+          <div class="dashboard-content slide-up">
+            <div class="dashboard-main">
+
+              <!-- Donor Actions -->
+              <div id="donor-actions" style="display:none">
+                <div class="section-header" style="margin-bottom:14px;">
+                  <span class="section-title">🍱 Quick Actions</span>
+                </div>
+                <div class="action-cards-row">
+                  <div class="action-card" id="open-post-food-btn">
+                    <span class="action-card-icon">📤</span>
+                    <div class="action-card-title">Post Surplus Food</div>
+                    <div class="action-card-desc">Have leftover food? Post it now and help someone in need.</div>
+                    <button class="btn btn-primary btn-sm">Donate Food</button>
+                  </div>
+                  <div class="action-card" id="open-decomp-btn">
+                    <span class="action-card-icon">♻️</span>
+                    <div class="action-card-title">Send for Composting</div>
+                    <div class="action-card-desc">Food that can't be donated can be composted sustainably.</div>
+                    <button class="btn btn-ghost btn-sm">Send Request</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recipient Actions -->
+              <div id="recipient-actions" style="display:none">
+                <div class="section-header" style="margin-bottom:14px;">
+                  <span class="section-title">🔍 Find Food</span>
+                </div>
+                <div class="action-cards-row">
+                  <div class="action-card" id="browse-food-btn">
+                    <span class="action-card-icon">🍽️</span>
+                    <div class="action-card-title">Available Food Near You</div>
+                    <div class="action-card-desc">Browse and claim available food donations in your area.</div>
+                    <button class="btn btn-primary btn-sm">Browse Food</button>
+                  </div>
+                  <div class="action-card" style="cursor:default;" onclick="App.showPage('map')">
+                    <span class="action-card-icon">📍</span>
+                    <div class="action-card-title">View on Map</div>
+                    <div class="action-card-desc">See donation locations plotted on an interactive map.</div>
+                    <button class="btn btn-ghost btn-sm">Open Map</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Individual Volunteer Actions -->
+              <div id="individual-actions" style="display:none">
+                <div class="section-header" style="margin-bottom:14px;">
+                  <span class="section-title">🤝 Volunteer</span>
+                </div>
+                <div class="action-cards-row">
+                  <div class="action-card" id="browse-food-ind-btn">
+                    <span class="action-card-icon">🚚</span>
+                    <div class="action-card-title">Help Deliver Food</div>
+                    <div class="action-card-desc">Volunteer to pick up and deliver food to those in need.</div>
+                    <button class="btn btn-primary btn-sm">Find Deliveries</button>
+                  </div>
+                  <div class="action-card" style="cursor:default;" onclick="App.showPage('map')">
+                    <span class="action-card-icon">🗺️</span>
+                    <div class="action-card-title">Nearby Donations</div>
+                    <div class="action-card-desc">See what donations are waiting to be picked up around you.</div>
+                    <button class="btn btn-ghost btn-sm">View Map</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Decomposition Center Actions -->
+              <div id="decomp-actions" style="display:none">
+                <div class="section-header" style="margin-bottom:14px;">
+                  <span class="section-title">♻️ Composting Requests</span>
+                </div>
+                <div class="action-cards-row">
+                  <div class="action-card" id="view-decomp-btn">
+                    <span class="action-card-icon">📋</span>
+                    <div class="action-card-title">View Requests</div>
+                    <div class="action-card-desc">View and manage incoming composting requests.</div>
+                    <button class="btn btn-primary btn-sm">View Requests</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
             <div class="dashboard-side">
               <div class="card">
-                <h3>Recent Activity</h3>
+                <h3>📋 Recent Activity</h3>
                 <div id="recent-activity" class="activity-list">
-                  <p class="empty-state">No recent activity.</p>
+                  <div class="empty-state">
+                    <span class="empty-state-icon">📭</span>
+                    <span>No recent activity.</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
-      <!-- FOOD LIST PAGE -->
+      <!-- ─────────────────────────────── -->
+      <!--          FOOD LIST PAGE         -->
+      <!-- ─────────────────────────────── -->
       <section class="page hidden" id="page-food-list">
         <div class="food-list-wrapper">
           <div class="page-header slide-up">
-            <h2>Available Food</h2>
-            <div class="filter-bar">
-              <select id="food-filter-type">
-                <option value="">All Types</option>
-                <option value="veg">🥦 Veg</option>
-                <option value="non-veg">🍗 Non-Veg</option>
-              </select>
-              <select id="food-filter-quality">
-                <option value="">All Quality</option>
-                <option value="fresh">✨ Fresh</option>
-                <option value="good">👍 Good</option>
-                <option value="average">🆗 Average</option>
-              </select>
-              <button class="btn btn-primary btn-sm" id="apply-filter-btn">Filter</button>
-            </div>
+            <h2>Available Donations</h2>
+            <p>Find and claim food donations near you</p>
           </div>
+
+          <!-- Filter Bar -->
+          <div class="filter-bar slide-up">
+            <span style="font-size:1rem;">🔽</span>
+            <select id="food-filter-type">
+              <option value="">All Types</option>
+              <option value="veg">🥦 Vegetarian</option>
+              <option value="non-veg">🍗 Non-Veg</option>
+            </select>
+            <select id="food-filter-quality">
+              <option value="">All Quality</option>
+              <option value="fresh">✨ Fresh</option>
+              <option value="good">👍 Good</option>
+              <option value="average">🆗 Average</option>
+            </select>
+            <button class="btn btn-teal btn-sm" id="apply-filter-btn">Apply Filter</button>
+          </div>
+
+          <!-- Food Grid -->
           <div class="food-grid" id="food-grid">
-            <div class="loading-spinner">Loading...</div>
+            <div class="loading-spinner"></div>
           </div>
         </div>
       </section>
 
-      <!-- MAP PAGE -->
+      <!-- ─────────────────────────────── -->
+      <!--            MAP PAGE             -->
+      <!-- ─────────────────────────────── -->
       <section class="page hidden" id="page-map">
         <div class="map-wrapper">
           <div class="page-header slide-up">
-            <h2>Food Map</h2>
-            <p>See food donations and recipients near you.</p>
+            <h2>📍 Food Map</h2>
+            <p>See donations and recipients near you</p>
           </div>
           <div id="map-container" class="map-container"></div>
         </div>
       </section>
 
-      <!-- NOTIFICATIONS PAGE -->
+      <!-- ─────────────────────────────── -->
+      <!--        NOTIFICATIONS PAGE       -->
+      <!-- ─────────────────────────────── -->
       <section class="page hidden" id="page-notifications">
         <div class="notif-wrapper">
-          <div class="page-header slide-up">
-            <h2>Notifications</h2>
-            <button class="btn btn-outline btn-sm" id="mark-all-read-btn">Mark all read</button>
+          <div class="page-header slide-up" style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <h2>🔔 Notifications</h2>
+              <p>Stay updated on your donations &amp; requests</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="mark-all-read-btn">Mark all read</button>
           </div>
           <div id="notif-list" class="notif-list">
-            <div class="loading-spinner">Loading...</div>
+            <div class="loading-spinner"></div>
           </div>
         </div>
       </section>
 
-      <!-- FOOD DETAIL PAGE -->
+      <!-- ─────────────────────────────── -->
+      <!--          FOOD DETAIL PAGE       -->
+      <!-- ─────────────────────────────── -->
       <section class="page hidden" id="page-food-detail">
         <div class="detail-wrapper">
-          <button class="btn btn-outline btn-sm back-btn" id="back-from-detail">← Back</button>
+          <button class="btn btn-ghost btn-sm back-btn" id="back-from-detail">← Back to Donations</button>
           <div id="food-detail-content" class="food-detail-content"></div>
         </div>
       </section>
 
     </main>
-  </div>
+
+    <!-- ===== BOTTOM NAV (Mobile) ===== -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="bottom-nav-item active" data-page="dashboard" id="bn-dashboard">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="bottom-nav-item" data-page="food-list" id="bn-food-list">
+        <span class="nav-icon">🍱</span>
+        <span class="nav-label">Food</span>
+      </button>
+      <button class="bottom-nav-item" data-page="map" id="bn-map">
+        <span class="nav-icon">📍</span>
+        <span class="nav-label">Nearby</span>
+      </button>
+      <button class="bottom-nav-item" data-page="notifications" id="bn-notifications">
+        <span class="nav-icon">🔔</span>
+        <span class="nav-label">Alerts</span>
+      </button>
+      <button class="bottom-nav-item" id="bn-profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </button>
+    </nav>
+
+  </div><!-- /app -->
 
   <!-- ===== MODALS ===== -->
 
@@ -257,7 +448,7 @@
           <div class="form-group">
             <label>Food Type</label>
             <select id="pf-type" required>
-              <option value="">Select</option>
+              <option value="">Select type</option>
               <option value="veg">🥦 Vegetarian</option>
               <option value="non-veg">🍗 Non-Vegetarian</option>
             </select>
@@ -271,7 +462,7 @@
           <div class="form-group">
             <label>Quality</label>
             <select id="pf-quality" required>
-              <option value="">Select</option>
+              <option value="">Select quality</option>
               <option value="fresh">✨ Fresh</option>
               <option value="good">👍 Good</option>
               <option value="average">🆗 Average</option>
@@ -287,28 +478,29 @@
           <input type="text" id="pf-address" placeholder="Full pickup address" required />
         </div>
         <div class="form-group">
-          <button type="button" class="btn btn-secondary btn-sm" id="pf-location-btn">📍 Use My Location</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="pf-location-btn">📍 Use My Location</button>
           <input type="hidden" id="pf-lat" />
           <input type="hidden" id="pf-lon" />
         </div>
         <div class="form-group">
-          <label>Photo / Video (optional)</label>
+          <label>Photo (optional)</label>
           <div class="file-upload-area">
-            <span>📷 Upload food image or video</span>
+            <span>📷 Upload food image</span>
+            <small>JPG, PNG up to 10MB</small>
             <input type="file" id="pf-image" accept="image/*,video/*" />
           </div>
           <span class="file-name" id="pf-file-name"></span>
         </div>
         <div class="form-error hidden" id="pf-error"></div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-outline" data-modal="modal-post-food">Cancel</button>
-          <button type="submit" class="btn btn-primary">Post Food</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-post-food">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="pf-submit-btn">Post Donation →</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Decomposition Request Modal -->
+  <!-- Decomposition Modal -->
   <div class="modal-overlay hidden" id="modal-decomp">
     <div class="modal slide-up">
       <div class="modal-header">
@@ -330,8 +522,8 @@
         </div>
         <div class="form-error hidden" id="dc-error"></div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-outline" data-modal="modal-decomp">Cancel</button>
-          <button type="submit" class="btn btn-primary">Submit Request</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-decomp">Cancel</button>
+          <button type="submit" class="btn btn-teal" id="dc-submit-btn">Submit Request →</button>
         </div>
       </form>
     </div>
@@ -362,36 +554,37 @@
         </div>
         <div class="form-group">
           <label>Notes</label>
-          <textarea id="verify-notes" placeholder="Any notes about the delivery..." rows="3"></textarea>
+          <textarea id="verify-notes" placeholder="Any notes about the delivery…" rows="3"></textarea>
         </div>
         <div class="form-error hidden" id="verify-error"></div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-outline" data-modal="modal-verify">Cancel</button>
-          <button type="submit" class="btn btn-primary">Upload Proof</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-verify">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="verify-submit-btn">Upload Proof →</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- AI Assistant Floating Button -->
-  <div class="ai-fab" id="ai-fab" title="AI Assistant">🤖</div>
+  <!-- ===== AI ASSISTANT ===== -->
+  <div class="ai-fab" id="ai-fab" title="Servio AI Assistant">🤖</div>
   <div class="ai-panel hidden" id="ai-panel">
     <div class="ai-panel-header">
       <span>🤖 Servio AI</span>
       <button id="ai-close">✕</button>
     </div>
     <div class="ai-messages" id="ai-messages">
-      <div class="ai-msg ai-msg-bot">Hi! I'm Servio AI. I can help you find NGOs, check expiry warnings, or navigate the app. Ask me anything!</div>
+      <div class="ai-msg ai-msg-bot">Hi! I'm Servio AI 👋 I can help you find nearby donations, check expiry warnings, or answer any questions. Ask me anything!</div>
     </div>
     <div class="ai-input-row">
-      <input type="text" id="ai-input" placeholder="Ask me anything..." />
+      <input type="text" id="ai-input" placeholder="Ask me anything…" autocomplete="off" />
       <button id="ai-send-btn">Send</button>
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- ===== TOAST ===== -->
   <div class="toast hidden" id="toast"></div>
 
+  <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/food.js"></script>
@@ -399,5 +592,73 @@
   <script src="js/notifications.js"></script>
   <script src="js/ai.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Inline UI enhancements -->
+  <script>
+    // Quick action category buttons navigation
+    document.querySelectorAll('.quick-action-btn[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (typeof App !== 'undefined' && App.showPage) App.showPage(btn.dataset.page);
+      });
+    });
+
+    // Section link navigation
+    document.querySelectorAll('.section-link[data-page]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        if (typeof App !== 'undefined' && App.showPage) App.showPage(link.dataset.page);
+      });
+    });
+
+    // Bottom nav
+    document.querySelectorAll('.bottom-nav-item[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!window.Auth || !Auth.isLoggedIn()) return;
+        document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (btn.dataset.page === 'food-list' && typeof Food !== 'undefined') {
+          Food.searchQuery = '';
+          Food.categoryFilter = 'all';
+          const searchInput = document.getElementById('search-input');
+          if (searchInput) searchInput.value = '';
+          document.querySelectorAll('.quick-action-btn').forEach(b => b.classList.remove('active'));
+          document.getElementById('qa-all')?.classList.add('active');
+        }
+        App.showPage(btn.dataset.page);
+      });
+    });
+
+    // Profile bottom nav → logout trigger (simple)
+    document.getElementById('bn-profile')?.addEventListener('click', () => {
+      if (typeof showToast !== 'undefined') showToast('Tap Logout in the top bar to sign out.', 'default');
+    });
+
+    // Search bar → food list navigation
+    document.getElementById('search-input')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (typeof Food !== 'undefined') {
+          Food.searchQuery = e.target.value;
+          Food.categoryFilter = 'all';
+        }
+        if (typeof App !== 'undefined') App.showPage('food-list');
+      }
+    });
+
+    // Quick category click -> filter and navigate
+    document.querySelectorAll('.quick-action-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.quick-action-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (typeof Food !== 'undefined') {
+          Food.categoryFilter = btn.dataset.category || 'all';
+          Food.searchQuery = '';
+        }
+        if (typeof App !== 'undefined') App.showPage('food-list');
+      });
+    });
+
+    // Sync bottom nav active state when top nav changes
+    const origShowPage = window.App && App.showPage ? App.showPage.bind(App) : null;
+  </script>
 </body>
 </html>

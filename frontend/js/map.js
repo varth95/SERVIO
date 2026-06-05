@@ -36,10 +36,10 @@ const MapView = {
       const icon = L.divIcon({
         className: "",
         html: `<div style="
-          background: linear-gradient(135deg, #ff6b35, #ff8c42);
+          background: linear-gradient(135deg, #FFB45A, #FFA333);
           color: white; border-radius: 50%; width: 36px; height: 36px;
           display: flex; align-items: center; justify-content: center;
-          font-size: 1.1rem; box-shadow: 0 2px 8px rgba(255,107,53,0.4);
+          font-size: 1.1rem; box-shadow: 0 4px 12px rgba(255, 180, 90, 0.3);
           border: 2px solid white;
         ">${food.food_type === "veg" ? "🥦" : "🍗"}</div>`,
         iconSize: [36, 36],
@@ -49,13 +49,14 @@ const MapView = {
       const marker = L.marker([food.latitude, food.longitude], { icon })
         .addTo(MapView.map)
         .bindPopup(`
-          <div style="min-width:200px; font-family: Inter, sans-serif;">
-            <strong style="font-size:1rem;">${food.org_name}</strong><br/>
-            <span style="color:#636e72; font-size:0.85rem;">${food.food_type === "veg" ? "🥦 Veg" : "🍗 Non-Veg"} · ${food.quantity}kg · ${food.quality}</span><br/>
-            <span style="color:#636e72; font-size:0.8rem;">📍 ${food.pickup_address}</span><br/>
+          <div style="min-width:200px; font-family: Inter, sans-serif; padding: 4px;">
+            <strong style="font-size:1rem; color: #2d3748;">${food.org_name}</strong><br/>
+            <span style="color:#718096; font-size:0.85rem; display: inline-block; margin-top: 4px;">${food.food_type === "veg" ? "🥦 Veg" : "🍗 Non-Veg"} · ${food.quantity}kg · ${food.quality}</span><br/>
+            <span style="color:#718096; font-size:0.8rem; display: inline-block; margin-top: 2px;">📍 ${food.pickup_address}</span><br/>
             <button onclick="Food.showDetail(${food.id}); App.showPage('food-detail');"
-              style="margin-top:8px; padding:6px 12px; background:#ff6b35; color:white;
-                     border:none; border-radius:6px; cursor:pointer; font-size:0.8rem; font-weight:600;">
+              style="margin-top:10px; width: 100%; padding:8px 16px; background:#20C7BE; color:white;
+                     border:none; border-radius:20px; cursor:pointer; font-size:0.8rem; font-weight:600;
+                     box-shadow: 0 4px 10px rgba(32, 199, 190, 0.2); transition: all 0.2s ease;">
               View Details
             </button>
           </div>
@@ -72,10 +73,10 @@ const MapView = {
       const userIcon = L.divIcon({
         className: "",
         html: `<div style="
-          background: #4ecdc4; color: white; border-radius: 50%;
+          background: #20C7BE; color: white; border-radius: 50%;
           width: 40px; height: 40px; display: flex; align-items: center;
           justify-content: center; font-size: 1.2rem;
-          box-shadow: 0 2px 10px rgba(78,205,196,0.5); border: 3px solid white;
+          box-shadow: 0 4px 12px rgba(32, 199, 190, 0.4); border: 3px solid white;
         ">👤</div>`,
         iconSize: [40, 40],
         iconAnchor: [20, 20],

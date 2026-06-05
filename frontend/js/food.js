@@ -6,30 +6,98 @@
 const Food = {
   currentList: [],
   currentFoodId: null,
+  searchQuery: "",
+  categoryFilter: "all",
 
   async loadList(status = "available") {
     const res = await Api.food.list(status);
     if (res.ok) {
       Food.currentList = res.data;
-      Food.renderGrid(res.data);
+      Food.applyFilters();
     } else {
       document.getElementById("food-grid").innerHTML =
         '<p class="empty-state">Failed to load food posts.</p>';
     }
   },
 
+  applyFilters() {
+    let list = Food.currentList;
+
+    // Apply category filter (from dashboard quick action)
+    if (Food.categoryFilter && Food.categoryFilter !== "all") {
+      const cat = Food.categoryFilter.toLowerCase();
+      if (cat === "veg") {
+        list = list.filter(f => f.food_type === "veg");
+      } else if (cat === "meals") {
+        const mealsKeywords = ["meal", "rice", "curry", "lunch", "dinner", "food", "hotel", "restaurant", "roti", "biryani"];
+        list = list.filter(f => 
+          mealsKeywords.some(kw => f.org_name.toLowerCase().includes(kw) || (f.pickup_address && f.pickup_address.toLowerCase().includes(kw)))
+        );
+      } else if (cat === "bakery") {
+        const bakeryKeywords = ["bakery", "bread", "cake", "cookie", "pastry", "bun", "biscuit", "croissant", "donut", "bake"];
+        list = list.filter(f => 
+          bakeryKeywords.some(kw => f.org_name.toLowerCase().includes(kw) || (f.pickup_address && f.pickup_address.toLowerCase().includes(kw)))
+        );
+      } else if (cat === "beverages") {
+        const bevKeywords = ["drink", "juice", "beverage", "water", "tea", "coffee", "milk", "shake", "soda", "cola"];
+        list = list.filter(f => 
+          bevKeywords.some(kw => f.org_name.toLowerCase().includes(kw) || (f.pickup_address && f.pickup_address.toLowerCase().includes(kw)))
+        );
+      } else if (cat === "fruits") {
+        const fruitKeywords = ["fruit", "apple", "banana", "orange", "grape", "mango", "berry", "pear", "peach"];
+        list = list.filter(f => 
+          fruitKeywords.some(kw => f.org_name.toLowerCase().includes(kw) || (f.pickup_address && f.pickup_address.toLowerCase().includes(kw)))
+        );
+      } else if (cat === "surplus") {
+        const surplusKeywords = ["surplus", "extra", "leftover", "excess", "buffet", "party", "event", "caterer"];
+        list = list.filter(f => 
+          surplusKeywords.some(kw => f.org_name.toLowerCase().includes(kw) || (f.pickup_address && f.pickup_address.toLowerCase().includes(kw)))
+        );
+      }
+    }
+
+    // Apply search query (from dashboard search input)
+    if (Food.searchQuery) {
+      const q = Food.searchQuery.toLowerCase().trim();
+      list = list.filter(f => 
+        f.org_name.toLowerCase().includes(q) || 
+        (f.pickup_address && f.pickup_address.toLowerCase().includes(q)) ||
+        (f.food_type || "").toLowerCase().includes(q) ||
+        (f.quality || "").toLowerCase().includes(q)
+      );
+    }
+
+    // Apply sidebar/dropdown filters (from food list page)
+    const type = document.getElementById("food-filter-type")?.value;
+    const quality = document.getElementById("food-filter-quality")?.value;
+
+    if (type) {
+      list = list.filter((f) => f.food_type === type);
+    }
+    if (quality) {
+      list = list.filter((f) => f.quality === quality);
+    }
+
+    Food.renderGrid(list);
+  },
+
   renderGrid(foods) {
     const grid = document.getElementById("food-grid");
     if (!foods.length) {
-      grid.innerHTML = '<p class="empty-state">🍽️ No food posts found.</p>';
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <span class="empty-state-icon">🍽️</span>
+          <span>No food donations found right now.</span>
+          <p style="font-size:0.82rem;color:var(--text-muted);">Check back soon or broaden your filters.</p>
+        </div>`;
       return;
     }
 
     grid.innerHTML = "";
-    grid.classList.add("stagger-children");
-
-    foods.forEach((food) => {
+    foods.forEach((food, i) => {
       const card = Food.createCard(food);
+      card.style.animationDelay = `${i * 50}ms`;
+      card.classList.add('slide-up');
       grid.appendChild(card);
     });
   },
@@ -39,142 +107,184 @@ const Food = {
     card.className = "food-card";
     card.dataset.id = food.id;
 
-    const imgContent = food.image_path
-      ? `<img src="/uploads/food/${food.image_path}" alt="${food.org_name}" />`
-      : `<span>${food.food_type === "veg" ? "🥦" : "🍗"}</span>`;
-
     const expiry = new Date(food.expiry_time);
     const now = new Date();
     const hoursLeft = Math.round((expiry - now) / 3600000);
     const expiryText =
-      hoursLeft < 0
-        ? "⚠️ Expired"
-        : hoursLeft < 2
-        ? `⚠️ ${hoursLeft}h left`
-        : expiry.toLocaleString();
-    const expiryClass = hoursLeft < 2 ? "color: var(--danger);" : "";
+      hoursLeft < 0 ? "⚠️ Expired"
+      : hoursLeft < 2 ? `⚠️ ${hoursLeft}h left`
+      : hoursLeft < 24 ? `⏰ ${hoursLeft}h left`
+      : expiry.toLocaleDateString();
+    const expiryColor = hoursLeft < 0 ? 'color:var(--danger);font-weight:700;'
+      : hoursLeft < 2 ? 'color:var(--warning);font-weight:700;' : '';
+
+    const typeEmoji = food.food_type === 'veg' ? '🥦' : '🍗';
+    const qualityEmoji = food.quality === 'fresh' ? '✨' : food.quality === 'good' ? '👍' : '🆗';
+
+    // Image section
+    const imgSection = food.image_path
+      ? `<img src="/uploads/food/${food.image_path}" alt="${escapeHtml(food.org_name)}" />`
+      : `<img src="food_card.png" alt="${escapeHtml(food.org_name)}" style="object-fit:cover;" />`;
 
     card.innerHTML = `
-      <div class="food-card-img">${imgContent}</div>
+      <div class="food-card-img">
+        ${imgSection}
+        <button class="food-card-add-btn" title="View details">+</button>
+      </div>
       <div class="food-card-body">
         <div class="food-card-title">${escapeHtml(food.org_name)}</div>
         <div class="food-card-meta">
-          <span class="badge badge-${food.food_type === "veg" ? "veg" : "nonveg"}">
-            ${food.food_type === "veg" ? "🥦 Veg" : "🍗 Non-Veg"}
-          </span>
-          <span class="badge badge-${food.quality}">${food.quality}</span>
+          <span class="badge badge-${food.food_type === 'veg' ? 'veg' : 'nonveg'}">${typeEmoji} ${food.food_type === 'veg' ? 'Veg' : 'Non-Veg'}</span>
+          <span class="badge badge-${food.quality}">${qualityEmoji} ${food.quality}</span>
           <span class="badge badge-${food.status}">${food.status}</span>
         </div>
-        <div style="font-size:0.85rem; color: var(--text-light);">
-          📍 ${escapeHtml(food.pickup_address || "—")}
+        <div class="food-card-location">
+          <span>📍</span>
+          <span>${escapeHtml((food.pickup_address || '—').substring(0, 40))}${food.pickup_address && food.pickup_address.length > 40 ? '…' : ''}</span>
         </div>
       </div>
       <div class="food-card-footer">
         <span class="food-qty">⚖️ ${food.quantity} kg</span>
-        <span class="food-expiry" style="${expiryClass}">${expiryText}</span>
+        <span class="food-expiry" style="${expiryColor}">${expiryText}</span>
       </div>
     `;
 
-    card.addEventListener("click", () => Food.showDetail(food.id));
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('.food-card-add-btn')) {
+        Food.showDetail(food.id);
+        App.showPage('food-detail');
+      } else {
+        Food.showDetail(food.id);
+        App.showPage('food-detail');
+      }
+    });
     return card;
   },
 
   async showDetail(foodId) {
     Food.currentFoodId = foodId;
+
+    // Show loading state
+    const container = document.getElementById('food-detail-content');
+    container.innerHTML = '<div class="loading-spinner"></div>';
+
     const res = await Api.food.get(foodId);
     if (!res.ok) {
-      showToast("Failed to load food details.", "error");
+      showToast('Failed to load food details.', 'error');
       return;
     }
 
     const food = res.data;
-    const container = document.getElementById("food-detail-content");
     const role = Auth.getRole();
-
-    const imgContent = food.image_path
-      ? `<div class="detail-image"><img src="/uploads/food/${food.image_path}" alt="${food.org_name}" /></div>`
-      : `<div class="detail-image" style="height:200px; background: linear-gradient(135deg,#f8f9fa,#e9ecef);">${food.food_type === "veg" ? "🥦" : "🍗"}</div>`;
-
     const expiry = new Date(food.expiry_time);
+    const now = new Date();
+    const hoursLeft = Math.round((expiry - now) / 3600000);
+    const expiryColor = hoursLeft < 0 ? 'var(--danger)' : hoursLeft < 4 ? 'var(--warning)' : 'var(--text)';
+    const typeEmoji = food.food_type === 'veg' ? '🥦' : '🍗';
+    const qualityEmoji = food.quality === 'fresh' ? '✨' : food.quality === 'good' ? '👍' : '🆗';
+
+    // Hero image
+    const heroContent = food.image_path
+      ? `<img src="/uploads/food/${food.image_path}" alt="${escapeHtml(food.org_name)}" />`
+      : `<img src="food_card.png" alt="${escapeHtml(food.org_name)}" style="width:100%;height:100%;object-fit:cover;" />`;
 
     container.innerHTML = `
-      ${imgContent}
-      <div class="card">
-        <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:0.5rem;">${escapeHtml(food.org_name)}</h2>
-        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
-          <span class="badge badge-${food.food_type === "veg" ? "veg" : "nonveg"}">${food.food_type === "veg" ? "🥦 Veg" : "🍗 Non-Veg"}</span>
-          <span class="badge badge-${food.quality}">${food.quality}</span>
-          <span class="badge badge-${food.status}">${food.status}</span>
+      <div class="detail-hero">
+        ${heroContent}
+        <div class="detail-hero-overlay"></div>
+      </div>
+
+      <div class="detail-card slide-up">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <h2 class="detail-title">${escapeHtml(food.org_name)}</h2>
+          <span class="badge badge-${food.status}" style="font-size:0.8rem;padding:6px 14px;">● ${food.status}</span>
         </div>
-        <div class="detail-info">
-          <div class="detail-field"><label>Quantity</label><p>⚖️ ${food.quantity} kg</p></div>
-          <div class="detail-field"><label>Expiry</label><p>⏰ ${expiry.toLocaleString()}</p></div>
-          <div class="detail-field"><label>Pickup Address</label><p>📍 ${escapeHtml(food.pickup_address)}</p></div>
-          <div class="detail-field"><label>Donor</label><p>👤 ${escapeHtml(food.donor_name || "—")}</p></div>
-          ${food.donor_phone ? `<div class="detail-field"><label>Contact</label><p>📞 ${escapeHtml(food.donor_phone)}</p></div>` : ""}
-          <div class="detail-field"><label>Posted</label><p>${new Date(food.created_at).toLocaleString()}</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <span class="badge badge-${food.food_type === 'veg' ? 'veg' : 'nonveg'}">${typeEmoji} ${food.food_type === 'veg' ? 'Vegetarian' : 'Non-Veg'}</span>
+          <span class="badge badge-${food.quality}">${qualityEmoji} ${food.quality.charAt(0).toUpperCase() + food.quality.slice(1)}</span>
+        </div>
+
+        <div class="detail-info-grid">
+          <div class="detail-field">
+            <label>⚖️ Quantity Available</label>
+            <p>${food.quantity} kg</p>
+          </div>
+          <div class="detail-field">
+            <label>⏰ Expiry Time</label>
+            <p style="color:${expiryColor}">${expiry.toLocaleString()}</p>
+          </div>
+          <div class="detail-field">
+            <label>📍 Pickup Address</label>
+            <p>${escapeHtml(food.pickup_address || '—')}</p>
+          </div>
+          <div class="detail-field">
+            <label>👤 Donated By</label>
+            <p>${escapeHtml(food.donor_name || '—')}</p>
+          </div>
+          ${food.donor_phone ? `
+          <div class="detail-field">
+            <label>📞 Contact</label>
+            <p><a href="tel:${escapeHtml(food.donor_phone)}" style="color:var(--teal);font-weight:600;">${escapeHtml(food.donor_phone)}</a></p>
+          </div>` : ''}
+          <div class="detail-field">
+            <label>🕐 Posted On</label>
+            <p>${new Date(food.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</p>
+          </div>
         </div>
       </div>
-      <div class="detail-actions" id="detail-actions"></div>
+
+      <div class="detail-cta" id="detail-actions"></div>
     `;
 
-    // Render action buttons based on role and status
-    const actionsEl = document.getElementById("detail-actions");
+    // Render action buttons
+    const actionsEl = document.getElementById('detail-actions');
     Food.renderDetailActions(actionsEl, food, role);
-
-    App.showPage("food-detail");
   },
 
   renderDetailActions(container, food, role) {
-    container.innerHTML = "";
+    container.innerHTML = '';
+    const buttons = [];
 
-    if (role === "recipient" || role === "individual") {
-      if (food.status === "available") {
-        const claimBtn = document.createElement("button");
-        claimBtn.className = "btn btn-primary";
-        claimBtn.textContent = "✅ Claim This Food";
-        claimBtn.addEventListener("click", () => Food.claimFood(food.id));
-        container.appendChild(claimBtn);
+    if (role === 'recipient' || role === 'individual') {
+      if (food.status === 'available') {
+        buttons.push({ label: '✅ Claim This Donation', cls: 'btn-primary', fn: () => Food.claimFood(food.id) });
       }
-
-      if (food.status === "waiting" && food.claimed_by === Auth.currentUser?.id) {
-        const deliverBtn = document.createElement("button");
-        deliverBtn.className = "btn btn-success";
-        deliverBtn.textContent = "🚚 Mark as Delivered";
-        deliverBtn.addEventListener("click", () => Food.markDelivered(food.id));
-        container.appendChild(deliverBtn);
-
-        const verifyBtn = document.createElement("button");
-        verifyBtn.className = "btn btn-secondary";
-        verifyBtn.textContent = "📷 Upload Proof";
-        verifyBtn.addEventListener("click", () => openVerifyModal(food.id));
-        container.appendChild(verifyBtn);
-
-        const expireBtn = document.createElement("button");
-        expireBtn.className = "btn btn-danger";
-        expireBtn.textContent = "⚠️ Unable to Deliver";
-        expireBtn.addEventListener("click", () => Food.markExpired(food.id));
-        container.appendChild(expireBtn);
+      if (food.status === 'waiting' && food.claimed_by === Auth.currentUser?.id) {
+        buttons.push({ label: '🚚 Mark as Delivered', cls: 'btn-teal', fn: () => Food.markDelivered(food.id) });
+        buttons.push({ label: '📷 Upload Proof', cls: 'btn-secondary', fn: () => openVerifyModal(food.id) });
+        buttons.push({ label: '⚠️ Unable to Deliver', cls: 'btn-danger', fn: () => Food.markExpired(food.id) });
       }
     }
 
-    if (role === "donor" && food.donor_id === Auth.currentUser?.id) {
-      if (food.status === "claimed") {
-        const receivedBtn = document.createElement("button");
-        receivedBtn.className = "btn btn-success";
-        receivedBtn.textContent = "✅ Confirm Receipt";
-        receivedBtn.addEventListener("click", () => Food.markReceived(food.id));
-        container.appendChild(receivedBtn);
+    if (role === 'donor' && food.donor_id === Auth.currentUser?.id) {
+      if (food.status === 'claimed') {
+        buttons.push({ label: '✅ Confirm Receipt', cls: 'btn-success', fn: () => Food.markReceived(food.id) });
       }
-
-      if (food.status === "available") {
-        const expireBtn = document.createElement("button");
-        expireBtn.className = "btn btn-danger";
-        expireBtn.textContent = "⚠️ Mark Almost Wasted";
-        expireBtn.addEventListener("click", () => Food.markExpired(food.id));
-        container.appendChild(expireBtn);
+      if (food.status === 'available') {
+        buttons.push({ label: '⚠️ Mark Almost Wasted', cls: 'btn-danger', fn: () => Food.markExpired(food.id) });
       }
     }
+
+    if (!buttons.length) {
+      // Show status info if no actions available
+      const info = document.createElement('div');
+      info.style.cssText = 'flex:1;text-align:center;color:var(--text-muted);font-size:0.88rem;padding:4px 0;';
+      info.textContent = food.status === 'delivered' ? '✅ This donation has been delivered.' :
+        food.status === 'expired' ? '⚠️ This donation has expired.' :
+        food.status === 'claimed' ? '🔵 This donation is currently claimed.' : '🔒 No actions available.';
+      container.appendChild(info);
+      return;
+    }
+
+    buttons.forEach(({ label, cls, fn }) => {
+      const btn = document.createElement('button');
+      btn.className = `btn ${cls}`;
+      btn.style.flex = '1';
+      btn.style.height = '52px';
+      btn.textContent = label;
+      btn.addEventListener('click', fn);
+      container.appendChild(btn);
+    });
   },
 
   async claimFood(foodId) {
@@ -266,12 +376,12 @@ function initPostFoodUI() {
     const imageFile = document.getElementById("pf-image").files[0];
     if (imageFile) formData.append("image", imageFile);
 
-    submitBtn.textContent = "Posting...";
+    submitBtn.textContent = "Posting…";
     submitBtn.disabled = true;
 
     const res = await Api.food.post(formData);
 
-    submitBtn.textContent = "Post Food";
+    submitBtn.textContent = "Post Donation →";
     submitBtn.disabled = false;
 
     if (res.ok) {
@@ -372,13 +482,7 @@ function initVerifyUI() {
 
 function initFoodFilters() {
   document.getElementById("apply-filter-btn").addEventListener("click", () => {
-    const type = document.getElementById("food-filter-type").value;
-    const quality = document.getElementById("food-filter-quality").value;
-
-    let filtered = Food.currentList;
-    if (type) filtered = filtered.filter((f) => f.food_type === type);
-    if (quality) filtered = filtered.filter((f) => f.quality === quality);
-    Food.renderGrid(filtered);
+    Food.applyFilters();
   });
 }
 
