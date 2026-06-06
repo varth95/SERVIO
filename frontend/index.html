@@ -9,7 +9,8 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -64,9 +65,84 @@
       <!-- ─────────────────────────────── -->
       <section class="page" id="page-login">
         <div class="auth-wrapper">
+          <!-- Ambient Background Elements -->
+          <div class="bg-glow bg-glow-1"></div>
+          <div class="bg-glow bg-glow-2"></div>
+          <div class="bg-glow bg-glow-3"></div>
+          
+          <div class="bg-illustrations-container">
+            <!-- Illustration 1: Helping Hands -->
+            <div class="bg-illustration bg-ill-left-top">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M40 70C35 68 28 65 24 57C20 49 22 41 27 36C32 31 40 33 40 39C40 33 48 31 53 36C58 41 60 49 56 57C52 65 45 68 40 70Z" opacity="0.3"/>
+                <path d="M22 62C18 58 12 55 10 45C8 35 12 28 18 25C24 22 30 25 32 30C34 25 40 22 46 25C52 28 56 35 54 45C52 55 46 58 42 62" />
+                <path d="M12 60C14 62 18 64 22 65C26 66 30 65 32 64C34 65 38 66 42 65C46 64 50 62 52 60" />
+              </svg>
+            </div>
+            <!-- Illustration 2: Sustainability / Leaf -->
+            <div class="bg-illustration bg-ill-right-top">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M50 85V45" />
+                <path d="M50 55C50 55 68 50 72 35C74 25 65 25 50 45" />
+                <path d="M50 65C50 65 32 60 28 45C26 35 35 35 50 50" />
+                <path d="M50 45C50 45 60 30 50 15C40 30 50 45 50 45Z" />
+              </svg>
+            </div>
+            <!-- Illustration 3: Sharing / Food Bowl -->
+            <div class="bg-illustration bg-ill-left-bottom">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 75H80" />
+                <path d="M30 55C30 63.8 39 70 50 70C61 70 70 63.8 70 55H30Z" />
+                <path d="M45 42C45 35 50 30 50 30" />
+                <path d="M55 42C55 35 50 30 50 30" />
+                <path d="M50 22C47 18 53 14 50 10" />
+              </svg>
+            </div>
+            <!-- Illustration 4: Community Connection -->
+            <div class="bg-illustration bg-ill-right-bottom">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="50" cy="50" r="10" />
+                <circle cx="25" cy="35" r="8" />
+                <circle cx="75" cy="35" r="8" />
+                <circle cx="35" cy="75" r="8" />
+                <circle cx="65" cy="75" r="8" />
+                <line x1="42" y1="44" x2="33" y2="39" />
+                <line x1="58" y1="44" x2="67" y2="39" />
+                <line x1="46" y1="58" x2="39" y2="69" />
+                <line x1="54" y1="58" x2="61" y2="69" />
+                <line x1="33" y1="38" x2="67" y2="38" />
+                <line x1="28" y1="43" x2="32" y2="67" />
+                <line x1="72" y1="43" x2="68" y2="67" />
+                <line x1="39" y1="73" x2="61" y2="73" />
+              </svg>
+            </div>
+          </div>
+
           <div class="auth-card slide-up">
             <div class="auth-header">
-              <span class="logo-icon-lg">🍱</span>
+              <!-- New Brand Emblem -->
+              <div class="auth-logo-container">
+                <svg class="auth-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="32" cy="32" r="30" stroke="url(#logo-ring-grad)" stroke-width="2" stroke-dasharray="4 4" opacity="0.8"/>
+                  <path d="M18 36C18 43.73 24.27 50 32 50C39.73 50 46 43.73 46 36H18Z" fill="url(#logo-bowl-grad)"/>
+                  <path d="M32 16C32 16 26 21 26 26C26 29.31 28.69 32 32 32C35.31 32 38 29.31 38 26C38 21 32 16 32 16Z" fill="url(#logo-heart-grad)"/>
+                  <path d="M32 21.5L33.5 23L32 24.5L30.5 23L32 21.5Z" fill="#FFFFFF"/>
+                  <defs>
+                    <linearGradient id="logo-ring-grad" x1="2" y1="32" x2="62" y2="32" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#20C7BE"/>
+                      <stop offset="1" stop-color="#FFB45A"/>
+                    </linearGradient>
+                    <linearGradient id="logo-bowl-grad" x1="18" y1="43" x2="46" y2="43" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#20C7BE"/>
+                      <stop offset="1" stop-color="#18A9A1"/>
+                    </linearGradient>
+                    <linearGradient id="logo-heart-grad" x1="26" y1="24" x2="38" y2="24" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#FFB45A"/>
+                      <stop offset="1" stop-color="#F59B35"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
               <h2>Welcome to Servio</h2>
               <p>Reducing food waste, one meal at a time.</p>
             </div>
