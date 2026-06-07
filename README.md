@@ -32,7 +32,7 @@ foodbridge/          ← Flask backend
     food.py          ← Post, claim, deliver, expire
     notifications.py ← Notification CRUD
     verification.py  ← Proof upload
-    decomposition.py ← Composting requests
+    
     ai_assistant.py  ← Gemini AI / rule-based fallback
   utils/
     location.py      ← Haversine distance calculation
@@ -61,14 +61,14 @@ frontend/            ← Pure HTML/CSS/JS
 | **Donor** | Post food, mark expired, send for composting |
 | **Recipient** | Browse & claim food, upload delivery proof |
 | **Individual** | Same as recipient — volunteer bridge users |
-| **Decomposition** | Receive expired food requests, mark collected |
+| | |
 
 ## Food Status Flow
 
 ```
 Available → Waiting → Claimed → Delivered
-                ↓
-             Expired → Decomposition
+           ↓
+         Expired
 ```
 
 ## API Endpoints
@@ -99,10 +99,7 @@ Available → Waiting → Claimed → Delivered
 - `POST /api/verification/upload/:food_id` — Upload proof
 - `GET  /api/verification/:food_id` — View proof
 
-### Decomposition
-- `POST /api/decomposition/request` — Create request
-- `GET  /api/decomposition/requests` — List requests
-- `POST /api/decomposition/requests/:id/collect` — Mark collected
+<!-- Decomposition API removed from public docs -->
 
 ### AI Assistant
 - `POST /api/ai/suggest` — Ask AI

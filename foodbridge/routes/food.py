@@ -286,43 +286,15 @@ def mark_expired(food_id):
         return jsonify({"error": "Not authorized."}), 403
 
     db.execute("UPDATE food SET status = 'expired' WHERE id = ?", (food_id,))
-    _forward_to_decomposition(db, food)
+    # Decomposition feature removed from user-facing flows: expired items are marked expired
+    # and handled by backend maintenance processes if configured.
     db.commit()
     db.close()
 
-    return jsonify({"message": "Food marked as expired and forwarded to decomposition."}), 200
+    return jsonify({"message": "Food marked as expired."}), 200
 
 
 def _forward_to_decomposition(db, food):
-    """Find nearest decomposition center and create a request."""
-    centers = db.execute(
-        "SELECT id, latitude, longitude FROM users WHERE role = 'decomposition'"
-    ).fetchall()
-
-    assigned_to = None
-    if centers and food["latitude"] and food["longitude"]:
-        def dist_key(c):
-            if c["latitude"] and c["longitude"]:
-                return haversine_distance(
-                    float(food["latitude"]), float(food["longitude"]),
-                    float(c["latitude"]), float(c["longitude"])
-                )
-            return float("inf")
-
-        nearest = min(centers, key=dist_key)
-        assigned_to = nearest["id"]
-
-    db.execute(
-        """INSERT INTO decomposition_requests
-           (food_id, requester_id, quantity, food_type, latitude, longitude, address, status, assigned_to)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'assigned', ?)""",
-        (food["id"], food["donor_id"], food["quantity"], food["food_type"],
-         food["latitude"], food["longitude"], food["pickup_address"], assigned_to),
-    )
-
-    if assigned_to:
-        create_notification(
-            db, assigned_to,
-            f"New decomposition request assigned. Food ID: {food['id']}. Please collect.",
-            "decomposition_assigned",
-        )
+    # Previously forwarded expired items to decomposition centers.
+    # The decomposition center feature has been disabled for user-facing flows.
+    return

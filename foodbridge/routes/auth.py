@@ -34,7 +34,7 @@ def register():
     if not all([name, email, password, role]):
         return jsonify({"error": "Name, email, password, and role are required."}), 400
 
-    if role not in ("donor", "recipient", "individual", "decomposition"):
+    if role not in ("donor", "recipient", "individual"):
         return jsonify({"error": "Invalid role."}), 400
 
     certificate_path = None

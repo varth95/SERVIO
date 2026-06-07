@@ -1,0 +1,25 @@
+{
+  "name": "Servio",
+  "short_name": "Servio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4FAF8",
+  "theme_color": "#20C7BE",
+  "icons": [
+    {
+      "src": "assets/favicon-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

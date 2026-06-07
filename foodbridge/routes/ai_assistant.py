@@ -77,7 +77,7 @@ def _rule_based_suggestion(query, user_id):
         return jsonify({
             "response": (
                 "Tip: Post food at least 2 hours before expiry so recipients have time to claim it. "
-                "If food is about to expire, use the 'Mark Almost Wasted' option to forward it to a decomposition center."
+                "If food is about to expire, use the 'Mark Almost Wasted' option so it can be handled by local waste-management or composting programs."
             )
         }), 200
 
@@ -89,7 +89,7 @@ def _rule_based_suggestion(query, user_id):
                 "1. Donors post surplus food with quantity, quality, and expiry.\n"
                 "2. Nearby recipients get notified and can claim food.\n"
                 "3. After delivery, upload proof to complete the transaction.\n"
-                "4. Expired food is auto-forwarded to decomposition centers."
+                "4. Expired food is marked expired and handled by local waste-management or composting programs where available."
             )
         }), 200
 

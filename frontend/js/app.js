@@ -5,6 +5,8 @@
 
 const App = {
   currentPage: null,
+  pageHistory: [],
+  historyInitialized: false,
 
   async init() {
     // Show loading screen, then boot
@@ -37,13 +39,15 @@ const App = {
     // Init all UI modules
     initAuthUI();
     initPostFoodUI();
-    initDecompUI();
     initVerifyUI();
     initFoodFilters();
     initNotificationsUI();
     AI.init();
     App.initNavigation();
+    HeroSlideshow.init();
+    ScrollReveal.init();
     App.initModals();
+    App.initHistory();
   },
 
   onLogin() {
@@ -61,6 +65,8 @@ const App = {
     document.getElementById('nav-role-badge').textContent = user.role;
 
     App.showPage('dashboard');
+    App.pageHistory = [];
+    if (App.historyInitialized) history.replaceState({page: 'dashboard'}, '', window.location.pathname);
     App.loadDashboard();
     Notifications.updateBadge();
 
@@ -81,21 +87,37 @@ const App = {
     document.getElementById('nav-user-private').classList.add('hidden');
 
     App.showPage('landing');
+    App.pageHistory = [];
+    if (App.historyInitialized) history.replaceState({page: 'landing'}, '', window.location.pathname);
     showToast('Logged out successfully.', 'success');
   },
 
-  showPage(pageId) {
+  showPage(pageId, {replaceState = false, fromHistory = false} = {}) {
+    if (pageId === App.currentPage) return;
+
+    const page = document.getElementById(`page-${pageId}`);
+    if (!page) return;
+
+    if (App.currentPage && !fromHistory) {
+      App.pageHistory.push(App.currentPage);
+    }
+
     // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
 
-    const page = document.getElementById(`page-${pageId}`);
-    if (page) {
-      page.classList.remove('hidden');
-      page.classList.add('page-enter');
-      setTimeout(() => page.classList.remove('page-enter'), 400);
-    }
+    page.classList.remove('hidden');
+    page.classList.add('page-enter');
+    setTimeout(() => page.classList.remove('page-enter'), 400);
 
     App.currentPage = pageId;
+
+    if (App.historyInitialized) {
+      if (replaceState) {
+        history.replaceState({page: pageId}, '', window.location.pathname);
+      } else if (!fromHistory) {
+        history.pushState({page: pageId}, '', window.location.pathname);
+      }
+    }
 
     // Toggle public links visibility based on current page
     const pubLinks = document.getElementById('nav-links-public');
@@ -125,6 +147,8 @@ const App = {
     } else if (pageId === 'notifications') {
       Notifications.loadAndRender();
     }
+
+    App.updatePageBackButtons();
   },
 
   initNavigation() {
@@ -146,6 +170,7 @@ const App = {
     
     document.getElementById('nav-get-started-btn')?.addEventListener('click', showLoginPanel);
     document.getElementById('landing-hero-start-btn')?.addEventListener('click', showLoginPanel);
+    document.querySelectorAll('.page-back-btn').forEach(btn => btn.addEventListener('click', () => App.navigateBack()));
 
     // Top private links click
     document.querySelectorAll('#nav-links-private .nav-link').forEach(link => {
@@ -172,12 +197,8 @@ const App = {
     document.getElementById('open-post-food-btn')?.addEventListener('click', (e) => {
       if (e.target.tagName === 'BUTTON' || e.currentTarget === e.target) openModal('modal-post-food');
     });
-    document.getElementById('open-decomp-btn')?.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON' || e.currentTarget === e.target) openModal('modal-decomp');
-    });
     document.getElementById('browse-food-btn')?.addEventListener('click', () => App.showPage('food-list'));
     document.getElementById('browse-food-ind-btn')?.addEventListener('click', () => App.showPage('food-list'));
-    document.getElementById('view-decomp-btn')?.addEventListener('click', () => App.loadDecompDashboard());
   },
 
 
@@ -197,6 +218,41 @@ const App = {
     });
   },
 
+  initHistory() {
+    const initialPage = App.currentPage || 'landing';
+    history.replaceState({page: initialPage}, '', window.location.pathname);
+    App.historyInitialized = true;
+
+    window.addEventListener('popstate', (event) => {
+      const targetPage = event.state && event.state.page ? event.state.page : App.getBackFallback(App.currentPage);
+      App.showPage(targetPage, {replaceState: true, fromHistory: true});
+    });
+  },
+
+  navigateBack() {
+    if (App.pageHistory.length > 0) {
+      window.history.back();
+      return;
+    }
+
+    const fallback = App.getBackFallback(App.currentPage);
+    App.showPage(fallback, {replaceState: true, fromHistory: true});
+  },
+
+  getBackFallback(pageId) {
+    if (pageId === 'login') return 'landing';
+    if (pageId === 'food-detail') return 'food-list';
+    if (Auth.isLoggedIn()) return 'dashboard';
+    return 'landing';
+  },
+
+  updatePageBackButtons() {
+    document.querySelectorAll('.page-back-btn').forEach(btn => {
+      const alwaysVisible = btn.dataset.alwaysVisible === 'true';
+      btn.style.display = alwaysVisible || App.pageHistory.length > 0 ? 'inline-flex' : 'none';
+    });
+  },
+
   async loadDashboard() {
     const role = Auth.getRole();
     const user = Auth.currentUser;
@@ -205,25 +261,22 @@ const App = {
     document.getElementById('donor-actions').style.display = role === 'donor' ? 'block' : 'none';
     document.getElementById('recipient-actions').style.display = role === 'recipient' ? 'block' : 'none';
     document.getElementById('individual-actions').style.display = role === 'individual' ? 'block' : 'none';
-    document.getElementById('decomp-actions').style.display = role === 'decomposition' ? 'block' : 'none';
 
-    // Greeting with time-aware icon
+    // Greeting
     const hour = new Date().getHours();
-    const timeIcon = hour < 6 ? '🌙' : hour < 12 ? '☀️' : hour < 17 ? '🌤️' : hour < 20 ? '🌆' : '🌙';
     const greeting = hour < 6 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
     const greetEl = document.getElementById('dashboard-greeting');
     const timeIconEl = document.getElementById('dashboard-time-icon');
     const heroTitleEl = document.getElementById('hero-title');
 
-    if (greetEl) greetEl.textContent = `${greeting}, ${user.name}! 👋`;
-    if (timeIconEl) timeIconEl.textContent = timeIcon;
+    if (greetEl) greetEl.textContent = `${greeting}, ${user.name}!`;
+    if (timeIconEl) timeIconEl.textContent = '';
 
     const subtitles = {
       donor: 'Ready to share some food today?',
       recipient: 'Check what\'s available near you.',
       individual: 'Help bridge the gap between donors and recipients.',
-      decomposition: 'Manage your composting requests.',
     };
     const subtitleEl = document.getElementById('dashboard-subtitle');
     if (subtitleEl) subtitleEl.textContent = subtitles[role] || 'Here\'s what\'s happening today.';
@@ -256,24 +309,24 @@ const App = {
     if (heroKg) heroKg.textContent = (available + myPosts).toLocaleString();
     if (heroVol) heroVol.textContent = Math.max(12, available * 2 + myPosts + 5).toLocaleString();
 
-    // Stat cards
-    const statIcons = ['🍱', role === 'donor' ? '📤' : '📥', '✅'];
-    const statColors = ['teal', 'orange', 'green'];
+    // Stat cards (icons removed)
     const stats = [
-      { icon: '🍱', value: available, label: 'Available Now', color: 'teal' },
-      { icon: role === 'donor' ? '📤' : '📥', value: myPosts, label: role === 'donor' ? 'My Donations' : 'My Claims', color: 'orange' },
-      { icon: '✅', value: delivered, label: 'Delivered', color: 'green' },
+      { value: available, label: 'Available Now', color: 'teal', icon: 'package' },
+      { value: myPosts, label: role === 'donor' ? 'My Donations' : 'My Claims', color: 'orange', icon: 'file' },
+      { value: delivered, label: 'Delivered', color: 'green', icon: 'check' },
     ];
 
     statsGrid.innerHTML = stats.map(s => `
       <div class="stat-card slide-up">
-        <div class="stat-icon-wrap ${s.color}">${s.icon}</div>
+        <div class="stat-icon-wrap ${s.color}"><span class="stat-icon" data-icon="${s.icon}"></span></div>
         <div class="stat-info">
           <h4>${s.value}</h4>
           <p>${s.label}</p>
         </div>
       </div>
     `).join('');
+
+    Icons.attach();
   },
 
   async loadRecentActivity() {
@@ -283,69 +336,35 @@ const App = {
     if (!res.ok || !res.data.length) {
       container.innerHTML = `
         <div class="empty-state">
-          <img src="logo.png" alt="Servio" class="empty-state-logo" />
+          <span class="empty-state-icon" data-icon="bell-off"></span>
           <span>No recent activity.</span>
         </div>`;
+      Icons.attach();
       return;
     }
 
     const recent = res.data.slice(0, 5);
-    const statusIcons = { available: '🟢', waiting: '🟡', claimed: '🔵', delivered: '✅', expired: '🔴' };
+    const statusIcons = {
+      available: '<span class="activity-icon-inner" data-icon="package"></span>',
+      waiting: '<span class="activity-icon-inner" data-icon="clock"></span>',
+      claimed: '<span class="activity-icon-inner" data-icon="users"></span>',
+      delivered: '<span class="activity-icon-inner" data-icon="check"></span>',
+      expired: '<span class="activity-icon-inner" data-icon="info"></span>'
+    };
 
     container.innerHTML = recent.map(f => `
       <div class="activity-item" onclick="Food.showDetail(${f.id}); App.showPage('food-detail');" style="cursor:pointer;">
-        <div class="activity-icon">${statusIcons[f.status] || '🍱'}</div>
+        <div class="activity-icon">${statusIcons[f.status] || ''}</div>
         <div style="flex:1;min-width:0;">
           <div class="activity-text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(f.org_name)} — ${f.quantity}kg</div>
           <div class="activity-time">${new Date(f.created_at).toLocaleDateString()} · <span style="font-weight:600;color:var(--teal);">${f.status}</span></div>
         </div>
       </div>
     `).join('');
+    Icons.attach();
   },
 
-  async loadDecompDashboard() {
-    // For decomposition centers — show their requests
-    const res = await Api.decomposition.list();
-    if (!res.ok) {
-      showToast("Failed to load decomposition requests.", "error");
-      return;
-    }
-
-    const container = document.getElementById("recent-activity");
-    if (!res.data.length) {
-      container.innerHTML = '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>No decomposition requests assigned.</span></div>';
-      return;
-    }
-
-    container.innerHTML = res.data
-      .map(
-        (r) => `
-      <div class="activity-item">
-        <div class="activity-icon">♻️</div>
-        <div style="flex:1;">
-          <div class="activity-text">${r.requester_name} — ${r.quantity}kg ${r.food_type || ""}</div>
-          <div class="activity-time">${r.address || "No address"} · ${r.status}</div>
-        </div>
-        ${
-          r.status === "assigned"
-            ? `<button class="btn btn-success btn-sm" onclick="App.collectDecomp(${r.id})">Collect</button>`
-            : ""
-        }
-      </div>
-    `
-      )
-      .join("");
-  },
-
-  async collectDecomp(id) {
-    const res = await Api.decomposition.collect(id);
-    if (res.ok) {
-      showToast("Marked as collected!", "success");
-      App.loadDecompDashboard();
-    } else {
-      showToast(res.data.error || "Failed.", "error");
-    }
-  },
+  // Decomposition dashboard and actions removed from client
 };
 
 // ===== MODAL HELPERS =====
@@ -362,11 +381,128 @@ function closeModal(id) {
 
 function showToast(message, type = "default") {
   const toast = document.getElementById("toast");
-  toast.textContent = message;
+  const toastIcons = {
+    success: '<span class="toast-icon" data-icon="check-circle"></span>',
+    error: '<span class="toast-icon" data-icon="alert-circle"></span>',
+    warning: '<span class="toast-icon" data-icon="alert-triangle"></span>',
+    info: '<span class="toast-icon" data-icon="info"></span>',
+    default: '<span class="toast-icon" data-icon="info"></span>'
+  };
+  const iconHtml = toastIcons[type] || toastIcons.default;
+  toast.innerHTML = `${iconHtml} <span>${message}</span>`;
   toast.className = `toast ${type}`;
   toast.classList.remove("hidden");
+  Icons.attach();
   setTimeout(() => toast.classList.add("hidden"), 3500);
 }
+
+// ===== HERO SLIDESHOW =====
+const HeroSlideshow = {
+  currentIndex: 0,
+  timer: null,
+  interval: 5200,
+  init() {
+    this.root = document.querySelector('.hero-slideshow-frame');
+    if (!this.root) return;
+
+    this.slides = Array.from(this.root.querySelectorAll('.hero-slide'));
+    this.dots = Array.from(document.querySelectorAll('.hero-slide-dot'));
+    if (!this.slides.length || !this.dots.length) return;
+
+    this.slides.forEach((slide, index) => {
+      const img = slide.querySelector('img');
+      if (!img) return;
+      img.addEventListener('load', () => {
+        console.info('Hero slideshow image loaded:', img.src);
+      });
+      img.addEventListener('error', () => this._handleImageError(slide, index, img));
+      if (img.complete && img.naturalWidth === 0) {
+        this._handleImageError(slide, index, img);
+      }
+    });
+
+    this.dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => this.goTo(index));
+    });
+
+    this.update();
+    this.play();
+  },
+  _handleImageError(slide, index, img) {
+    console.warn('Hero slideshow image failed to load:', img.src);
+    slide.style.display = 'none';
+    const dot = this.dots[index];
+    if (dot) dot.style.display = 'none';
+    this.slides = this.slides.filter(s => s.style.display !== 'none');
+    this.dots = this.dots.filter(d => d.style.display !== 'none');
+    if (this.currentIndex >= this.slides.length) this.currentIndex = 0;
+    this.update();
+  },
+  update() {
+    if (!this.slides.length) return;
+    this.slides.forEach((slide, index) => slide.classList.toggle('active', index === this.currentIndex));
+    this.dots.forEach((dot, index) => dot.classList.toggle('active', index === this.currentIndex));
+  },
+  goTo(index) {
+    if (index < 0 || index >= this.slides.length) return;
+    this.currentIndex = index;
+    this.update();
+    this.restart();
+  },
+  next() {
+    if (!this.slides.length) return;
+    this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+    this.update();
+  },
+  play() {
+    this.pause();
+    this.timer = setInterval(() => this.next(), this.interval);
+  },
+  pause() {
+    if (this.timer) clearInterval(this.timer);
+  },
+  restart() {
+    this.pause();
+    this.play();
+  }
+};
+
+// ===== SCROLL REVEAL =====
+const ScrollReveal = {
+  observer: null,
+  groups: [
+    { selector: '#landing-impact', targets: ['.landing-section-header > *', '.impact-card'] },
+    { selector: '#landing-features', targets: ['.landing-section-header > *', '.feature-detail-card'] },
+    { selector: '#landing-testimonials', targets: ['.landing-section-header > *', '.testimonial-card'] }
+  ],
+  init() {
+    if (!('IntersectionObserver' in window)) return;
+    this.observer = new IntersectionObserver(this.handleIntersect.bind(this), {
+      root: null,
+      rootMargin: '0px 0px -20% 0px',
+      threshold: 0.15,
+    });
+
+    this.groups.forEach(group => {
+      const section = document.querySelector(group.selector);
+      if (!section) return;
+      const items = section.querySelectorAll(group.targets.join(', '));
+      items.forEach((item, index) => {
+        item.classList.add('scroll-reveal');
+        item.style.transitionDelay = `${index * 120}ms`;
+        this.observer.observe(item);
+      });
+    });
+  },
+  handleIntersect(entries) {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const target = entry.target;
+      target.classList.add('visible');
+      this.observer.unobserve(target);
+    });
+  }
+};
 
 // ===== BOOT =====
 document.addEventListener("DOMContentLoaded", () => App.init());

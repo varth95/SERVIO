@@ -7,17 +7,21 @@
   <meta name="description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
   
   <!-- Favicon & Brand Icons -->
-  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#20C7BE" />
   
   <!-- SEO & Open Graph Metadata -->
   <meta property="og:title" content="Servio — Connect. Share. Nourish." />
   <meta property="og:description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
-  <meta property="og:image" content="logo.png" />
+  <meta property="og:image" content="assets/og-image.png" />
   <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Servio — Connect. Share. Nourish." />
   <meta name="twitter:description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
-  <meta name="twitter:image" content="logo.png" />
+  <meta name="twitter:image" content="assets/og-image.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -38,8 +42,10 @@
   <!-- ===== LOADING SCREEN ===== -->
   <div id="loading-screen" class="loading-screen">
     <div class="loading-logo-modern">
-      <img src="logo.png" alt="Servio Logo" class="loading-logo-img" />
-      <div class="loading-dots">
+      <div class="logo-loading">
+        <img src="assets/logo-loading.png" alt="Servio Logo" class="loading-logo-img" />
+      </div>
+      <div class="loading-dots" aria-hidden="true">
         <span></span>
         <span></span>
         <span></span>
@@ -49,42 +55,62 @@
 
 
   <!-- ===== APP WRAPPER ===== -->
+  <div id="ambient-background" aria-hidden="true">
+    <div class="ambient-base"></div>
+    <div class="ambient-blob ambient-blob-1"></div>
+    <div class="ambient-blob ambient-blob-2"></div>
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="ambient-cursor-spot" id="ambient-cursor-spot"></div>
+    <div class="ambient-particles" id="ambient-particles"></div>
+  </div>
   <div id="app" class="app hidden">
 
     <!-- ===== TOP NAVBAR ===== -->
     <nav class="navbar" id="navbar">
       <div class="nav-brand">
-        <img src="logo.png" alt="Servio Logo" class="brand-logo-img" />
-      </div>
-      
-      <!-- Public Links (unauthenticated) -->
-      <div class="nav-links" id="nav-links-public">
-        <a href="#landing-features" class="nav-link">Features</a>
-        <a href="#landing-impact" class="nav-link">Impact</a>
-        <a href="#landing-testimonials" class="nav-link">Stories</a>
-      </div>
-
-      <!-- Private Links (authenticated) -->
-      <div class="nav-links hidden" id="nav-links-private">
-        <a href="#" class="nav-link active" data-page="dashboard" id="nl-dashboard">🏠 Home</a>
-        <a href="#" class="nav-link" data-page="food-list" id="nl-food-list">🍱 Donations</a>
-        <a href="#" class="nav-link" data-page="map" id="nl-map">📍 Nearby</a>
-        <a href="#" class="nav-link" data-page="notifications" id="nl-notifications">
-          🔔 Alerts
-          <span class="notif-badge hidden" id="notif-badge">0</span>
+        <a class="brand-link" href="#" aria-label="Servio Home">
+          <img src="assets/logo-full.png" alt="Servio Logo" class="brand-logo-img logo-full" />
+          <img src="assets/logo-mark.png" alt="Servio Logo" class="brand-logo-img logo-mark-nav" />
         </a>
       </div>
+      
+      <div class="nav-right">
+        <!-- Public Links (unauthenticated) -->
+        <div class="nav-links" id="nav-links-public">
+          <a href="#landing-features" class="nav-link"><span class="nav-link-icon" data-icon="sliders"></span>Features</a>
+          <a href="#landing-impact" class="nav-link"><span class="nav-link-icon" data-icon="trending-up"></span>Impact</a>
+          <a href="#landing-testimonials" class="nav-link"><span class="nav-link-icon" data-icon="message-square"></span>Stories</a>
+        </div>
 
-      <!-- Public Actions (unauthenticated) -->
-      <div class="nav-user" id="nav-user-public">
-        <button class="btn btn-teal btn-sm" id="nav-get-started-btn">Sign In</button>
-      </div>
+        <!-- Private Links (authenticated) -->
+        <div class="nav-links hidden" id="nav-links-private">
+          <a href="#" class="nav-link active" data-page="dashboard" id="nl-dashboard">
+            <span class="nav-link-icon" data-icon="home"></span> Home
+          </a>
+          <a href="#" class="nav-link" data-page="food-list" id="nl-food-list">
+            <span class="nav-link-icon" data-icon="package"></span> Donations
+          </a>
+          <a href="#" class="nav-link" data-page="map" id="nl-map">
+            <span class="nav-link-icon" data-icon="map"></span> Nearby
+          </a>
+          <a href="#" class="nav-link" data-page="notifications" id="nl-notifications">
+            <span class="nav-link-icon" data-icon="bell"></span> Alerts
+            <span class="notif-badge hidden" id="notif-badge">0</span>
+          </a>
+        </div>
 
-      <!-- Private Actions (authenticated) -->
-      <div class="nav-user hidden" id="nav-user-private">
-        <span id="nav-username">Guest</span>
-        <span class="role-badge" id="nav-role-badge">—</span>
-        <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
+        <!-- Public Actions (unauthenticated) -->
+        <div class="nav-user" id="nav-user-public">
+          <button class="btn btn-teal btn-sm" id="nav-get-started-btn">Sign In <span class="btn-icon btn-icon-right" data-icon="log-in"></span></button>
+        </div>
+
+        <!-- Private Actions (authenticated) -->
+        <div class="nav-user hidden" id="nav-user-private">
+          <span id="nav-username">Guest</span>
+          <span class="role-badge" id="nav-role-badge">—</span>
+          <button class="btn btn-ghost btn-sm" id="logout-btn"><span class="btn-icon btn-icon-left" data-icon="log-out"></span> Logout</button>
+        </div>
       </div>
     </nav>
 
@@ -104,15 +130,27 @@
               Servio is a modern community food bridge. We connect hotels, restaurants, and caterers with local NGOs and volunteers to rescue surplus food and route waste to composting centers.
             </p>
             <div class="landing-hero-ctas">
-              <button class="btn btn-teal" id="landing-hero-start-btn">Get Started →</button>
-              <a href="#landing-features" class="btn btn-secondary">Learn More</a>
+              <button class="btn btn-teal" id="landing-hero-start-btn">Get Started <span class="btn-icon btn-icon-right" data-icon="arrow-right"></span></button>
+              <a href="#landing-features" class="btn btn-secondary">Learn More <span class="btn-icon btn-icon-right" data-icon="info"></span></a>
             </div>
           </div>
           <div class="landing-hero-visual">
             <div class="hero-visual-card">
-              <div class="visual-card-glow"></div>
-              <div class="hero-logo-frame">
-                <img src="logo.png" alt="Servio Logo" class="hero-logo-img" />
+              <div class="hero-slideshow-frame" aria-live="polite">
+                <div class="hero-slide active">
+                  <img src="hero_donation.png" loading="lazy" alt="Volunteers distributing meals to community members" />
+                </div>
+                <div class="hero-slide">
+                  <img src="food_card.png" loading="lazy" alt="Community support and food donation in action" />
+                </div>
+                <div class="hero-slide hero-slide--logo" data-slide-type="logo">
+                  <img src="assets/og-image.png" loading="lazy" alt="Servio brand and logo graphic" />
+                </div>
+              </div>
+              <div class="hero-slideshow-dots">
+                <button class="hero-slide-dot active" aria-label="Show slide 1"></button>
+                <button class="hero-slide-dot" aria-label="Show slide 2"></button>
+                <button class="hero-slide-dot" aria-label="Show slide 3"></button>
               </div>
             </div>
           </div>
@@ -126,18 +164,22 @@
           </div>
           <div class="landing-impact-grid">
             <div class="impact-card">
+              <span class="impact-icon" data-icon="utensils"></span>
               <span class="impact-num" id="land-meals">2,450+</span>
               <span class="impact-lbl">Meals Shared</span>
             </div>
             <div class="impact-card">
+              <span class="impact-icon" data-icon="package"></span>
               <span class="impact-num" id="land-kg">840 kg</span>
               <span class="impact-lbl">Food Rescued</span>
             </div>
             <div class="impact-card">
+              <span class="impact-icon" data-icon="users"></span>
               <span class="impact-num" id="land-vol">128+</span>
               <span class="impact-lbl">Active Volunteers</span>
             </div>
             <div class="impact-card">
+              <span class="impact-icon" data-icon="leaf"></span>
               <span class="impact-num" id="land-co2">1,260 kg</span>
               <span class="impact-lbl">CO₂ Prevented</span>
             </div>
@@ -152,17 +194,17 @@
           </div>
           <div class="landing-features-grid">
             <div class="feature-detail-card">
-              <div class="feature-icon">📤</div>
+              <div class="feature-icon" data-icon="hand-heart"></div>
               <h3>Post surplus food</h3>
               <p>Hotels, restaurants, and caterers list surplus food details in seconds. Nearby verified recipient NGOs are notified instantly via intelligent matching.</p>
             </div>
             <div class="feature-detail-card">
-              <div class="feature-icon">♻️</div>
+              <div class="feature-icon" data-icon="leaf"></div>
               <h3>Organic composting</h3>
-              <p>Food that cannot be eaten safely is automatically routed to decomposition centers, turning potential methane emissions into nourishing garden compost.</p>
+              <p>Food that cannot be eaten safely is managed to reduce waste and greenhouse gases.</p>
             </div>
             <div class="feature-detail-card">
-              <div class="feature-icon">📷</div>
+              <div class="feature-icon" data-icon="shield-check"></div>
               <h3>Verified delivery</h3>
               <p>Volunteers and recipients track deliveries on the live map and upload photographic and notes verification to ensure food reaches the right hands.</p>
             </div>
@@ -177,9 +219,10 @@
           </div>
           <div class="landing-testimonials-grid">
             <div class="testimonial-card">
+              <span class="testimonial-icon" data-icon="quote"></span>
               <p class="testimonial-quote">"Servio completely streamlined our food operations. Instead of throwing away extra buffet meals, we feed 100+ children every single day."</p>
               <div class="testimonial-author">
-                <div class="author-avatar">🏨</div>
+                <div class="author-avatar" data-icon="building"></div>
                 <div class="author-info">
                   <span class="author-name">The Grand Pavilion</span>
                   <span class="author-role">Hotel Donor Partner</span>
@@ -187,9 +230,10 @@
               </div>
             </div>
             <div class="testimonial-card">
+              <span class="testimonial-icon" data-icon="quote"></span>
               <p class="testimonial-quote">"As a shelter, food supply was always a source of uncertainty. Servio connects us with fresh, high-quality meals instantly from local donors."</p>
               <div class="testimonial-author">
-                <div class="author-avatar">🏠</div>
+                <div class="author-avatar" data-icon="users"></div>
                 <div class="author-info">
                   <span class="author-name">Hope Care Foundation</span>
                   <span class="author-role">NGO Recipient Partner</span>
@@ -202,7 +246,7 @@
         <!-- Footer -->
         <footer class="landing-footer">
           <div class="footer-brand">
-            <img src="logo.png" alt="Servio Logo" class="brand-logo-img footer-logo-img" />
+            <span class="logo-full footer-logo-img"><img src="assets/logo-full.png" alt="Servio Logo" class="brand-logo-img" /></span>
           </div>
           <p class="footer-desc">Connect. Share. Nourish. Modernizing food redistribution to end waste and support neighborhoods.</p>
           <div class="footer-meta">
@@ -222,7 +266,12 @@
           <div class="bg-glow bg-glow-1"></div>
           <div class="bg-glow bg-glow-2"></div>
           <div class="bg-glow bg-glow-3"></div>
-          
+
+          <!-- Cursor-following subtle spotlight (behind auth card) -->
+          <div class="cursor-spotlight" id="cursor-spotlight" aria-hidden="true">
+            <div class="spot" id="cursor-spot"></div>
+          </div>
+
           <div class="bg-illustrations-container">
             <!-- Illustration 1: Helping Hands -->
             <div class="bg-illustration bg-ill-left-top">
@@ -272,81 +321,106 @@
           </div>
 
           <div class="auth-card slide-up">
+            <button class="btn btn-ghost btn-sm back-btn page-back-btn" id="login-back-btn" data-always-visible="true"><span class="btn-icon btn-icon-left" data-icon="arrow-left"></span> Back to home</button>
             <div class="auth-header">
               <div class="auth-logo-container">
-                <img src="logo.png" alt="Servio Logo" class="brand-logo-img auth-logo-img" />
+                <img src="assets/logo-mark.png" alt="Servio Logo" class="brand-logo-img auth-logo-img" />
               </div>
-              <h2>Welcome to Servio</h2>
+              <h2>Welcome</h2>
               <p>Reducing food waste, one meal at a time.</p>
             </div>
             <div class="tab-switcher">
-              <button class="tab-btn active" id="tab-login-btn">Login</button>
-              <button class="tab-btn" id="tab-register-btn">Register</button>
+              <button class="tab-btn active" id="tab-login-btn"><span class="btn-icon btn-icon-left" data-icon="log-in"></span>Login</button>
+              <button class="tab-btn" id="tab-register-btn"><span class="btn-icon btn-icon-left" data-icon="user-plus"></span>Register</button>
             </div>
 
             <!-- Login Form -->
             <form id="login-form" class="auth-form">
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="mail"></span>
+                  <input type="email" id="login-email" class="with-icon" placeholder="you@example.com" required autocomplete="email" />
+                </div>
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="lock"></span>
+                  <input type="password" id="login-password" class="with-icon" placeholder="••••••••" required autocomplete="current-password" />
+                </div>
               </div>
               <div class="form-error hidden" id="login-error"></div>
-              <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">Login →</button>
+              <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">Login <span class="btn-icon btn-icon-right" data-icon="arrow-right"></span></button>
             </form>
 
             <!-- Register Form -->
             <form id="register-form" class="auth-form hidden">
               <div class="form-group">
                 <label>Full Name / Organization</label>
-                <input type="text" id="reg-name" placeholder="Your name or org name" required autocomplete="name" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="user"></span>
+                  <input type="text" id="reg-name" class="with-icon" placeholder="Your name or org name" required autocomplete="name" />
+                </div>
               </div>
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="mail"></span>
+                  <input type="email" id="reg-email" class="with-icon" placeholder="you@example.com" required autocomplete="email" />
+                </div>
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="reg-password" placeholder="Min 6 characters" required autocomplete="new-password" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="lock"></span>
+                  <input type="password" id="reg-password" class="with-icon" placeholder="Min 6 characters" required autocomplete="new-password" />
+                </div>
               </div>
               <div class="form-group">
                 <label>Role</label>
-                <select id="reg-role" required>
-                  <option value="">Select your role</option>
-                  <option value="donor">🏨 Donor (Hotel / Restaurant / Caterer)</option>
-                  <option value="recipient">🏠 Recipient (NGO / Orphanage / Old Age Home)</option>
-                  <option value="individual">🤝 Individual (Volunteer / Bridge User)</option>
-                  <option value="decomposition">♻️ Decomposition Center</option>
-                </select>
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="users"></span>
+                  <select id="reg-role" class="with-icon" required>
+                    <option value="">Select your role</option>
+                    <option value="donor">Donor (Hotel / Restaurant / Caterer)</option>
+                    <option value="recipient">Recipient (NGO / Orphanage / Old Age Home)</option>
+                    <option value="individual">Individual (Volunteer / Bridge User)</option>
+                  </select>
+                </div>
               </div>
               <div class="form-group" id="reg-phone-group">
                 <label>Phone Number</label>
-                <input type="tel" id="reg-phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="phone"></span>
+                  <input type="tel" id="reg-phone" class="with-icon" placeholder="+91 XXXXX XXXXX" autocomplete="tel" />
+                </div>
               </div>
               <div class="form-group">
                 <label>Address</label>
-                <input type="text" id="reg-address" placeholder="Your address" autocomplete="street-address" />
+                <div class="input-icon-group">
+                  <span class="input-icon" data-icon="map-pin"></span>
+                  <input type="text" id="reg-address" class="with-icon" placeholder="Your address" autocomplete="street-address" />
+                </div>
               </div>
               <div class="form-group" id="reg-cert-group" style="display:none">
                 <label>Business Certificate <span class="required">*</span></label>
                 <div class="file-upload-area" id="cert-upload-area">
-                  <span>📄 Click to upload or drag &amp; drop</span>
+                  <span data-icon="file">Click to upload or drag &amp; drop</span>
                   <small>PNG, JPG, or PDF</small>
                   <input type="file" id="reg-certificate" accept=".png,.jpg,.jpeg,.pdf" />
                 </div>
                 <span class="file-name" id="cert-file-name"></span>
               </div>
               <button type="button" class="btn btn-ghost btn-sm" id="get-location-btn" style="margin-bottom:16px;">
-                📍 Use My Location
+                <span class="btn-icon btn-icon-left" data-icon="map-pin"></span>
+                Use My Location
               </button>
               <input type="hidden" id="reg-lat" />
               <input type="hidden" id="reg-lon" />
               <div class="form-error hidden" id="reg-error"></div>
               <div class="form-success hidden" id="reg-success"></div>
-              <button type="submit" class="btn btn-primary btn-full" id="reg-submit-btn">Create Account →</button>
+              <button type="submit" class="btn btn-primary btn-full" id="reg-submit-btn">Create Account <span class="btn-icon btn-icon-right" data-icon="arrow-right"></span></button>
             </form>
           </div>
         </div>
@@ -362,10 +436,10 @@
           <div class="hero-card slide-up">
             <div class="hero-content">
               <div class="hero-greeting">
-                <span id="dashboard-time-icon">☀️</span>
+                <span id="dashboard-time-icon" class="hero-greeting-icon" data-icon="clock"></span>
                 <span id="dashboard-greeting">Welcome back!</span>
               </div>
-              <h1 class="hero-title" id="hero-title">Together we fight<br>food waste 💚</h1>
+              <h1 class="hero-title" id="hero-title">Together we fight<br>food waste</h1>
               <p class="hero-subtitle" id="dashboard-subtitle">Here's what's happening today.</p>
               <div class="hero-stats">
                 <div class="hero-stat">
@@ -390,7 +464,7 @@
           <!-- Search -->
           <div class="search-section slide-up">
             <div class="search-bar" id="search-bar">
-              <span class="search-icon">🔍</span>
+              <span class="search-icon" data-icon="search"></span>
               <input type="text" id="search-input" placeholder="Search food donations near you…" autocomplete="off" />
             </div>
           </div>
@@ -403,31 +477,31 @@
             </div>
             <div class="quick-actions-grid">
               <button class="quick-action-btn" data-category="all" id="qa-all">
-                <div class="quick-action-icon">🍱</div>
+                <div class="quick-action-icon" data-icon="package"></div>
                 <span class="quick-action-label">All Food</span>
               </button>
               <button class="quick-action-btn" data-category="meals" id="qa-meals">
-                <div class="quick-action-icon">🍛</div>
+                <div class="quick-action-icon" data-icon="utensils"></div>
                 <span class="quick-action-label">Meals</span>
               </button>
               <button class="quick-action-btn" data-category="bakery" id="qa-bakery">
-                <div class="quick-action-icon">🍞</div>
+                <div class="quick-action-icon" data-icon="bread"></div>
                 <span class="quick-action-label">Bakery</span>
               </button>
               <button class="quick-action-btn" data-category="beverages" id="qa-bev">
-                <div class="quick-action-icon">🥤</div>
+                <div class="quick-action-icon" data-icon="cup"></div>
                 <span class="quick-action-label">Beverages</span>
               </button>
               <button class="quick-action-btn" data-category="fruits" id="qa-fruits">
-                <div class="quick-action-icon">🍎</div>
+                <div class="quick-action-icon" data-icon="apple"></div>
                 <span class="quick-action-label">Fruits</span>
               </button>
               <button class="quick-action-btn" data-category="vegetables" id="qa-veg">
-                <div class="quick-action-icon">🥬</div>
+                <div class="quick-action-icon" data-icon="leaf"></div>
                 <span class="quick-action-label">Vegetables</span>
               </button>
               <button class="quick-action-btn" data-category="surplus" id="qa-surplus">
-                <div class="quick-action-icon">📦</div>
+                <div class="quick-action-icon" data-icon="repeat"></div>
                 <span class="quick-action-label">Surplus</span>
               </button>
             </div>
@@ -443,38 +517,33 @@
               <!-- Donor Actions -->
               <div id="donor-actions" style="display:none">
                 <div class="section-header" style="margin-bottom:14px;">
-                  <span class="section-title">🍱 Quick Actions</span>
+                  <span class="section-title">Quick Actions</span>
                 </div>
                 <div class="action-cards-row">
                   <div class="action-card" id="open-post-food-btn">
-                    <span class="action-card-icon">📤</span>
+                    <span class="action-card-icon" data-icon="hand-heart"></span>
                     <div class="action-card-title">Post Surplus Food</div>
                     <div class="action-card-desc">Have leftover food? Post it now and help someone in need.</div>
                     <button class="btn btn-primary btn-sm">Donate Food</button>
                   </div>
-                  <div class="action-card" id="open-decomp-btn">
-                    <span class="action-card-icon">♻️</span>
-                    <div class="action-card-title">Send for Composting</div>
-                    <div class="action-card-desc">Food that can't be donated can be composted sustainably.</div>
-                    <button class="btn btn-ghost btn-sm">Send Request</button>
-                  </div>
+                  
                 </div>
               </div>
 
               <!-- Recipient Actions -->
               <div id="recipient-actions" style="display:none">
-                <div class="section-header" style="margin-bottom:14px;">
-                  <span class="section-title">🔍 Find Food</span>
+                  <div class="section-header" style="margin-bottom:14px;">
+                  <span class="section-title">Find Food</span>
                 </div>
                 <div class="action-cards-row">
                   <div class="action-card" id="browse-food-btn">
-                    <span class="action-card-icon">🍽️</span>
+                    <span class="action-card-icon" data-icon="package"></span>
                     <div class="action-card-title">Available Food Near You</div>
                     <div class="action-card-desc">Browse and claim available food donations in your area.</div>
                     <button class="btn btn-primary btn-sm">Browse Food</button>
                   </div>
                   <div class="action-card" style="cursor:default;" onclick="App.showPage('map')">
-                    <span class="action-card-icon">📍</span>
+                    <span class="action-card-icon" data-icon="map"></span>
                     <div class="action-card-title">View on Map</div>
                     <div class="action-card-desc">See donation locations plotted on an interactive map.</div>
                     <button class="btn btn-ghost btn-sm">Open Map</button>
@@ -484,18 +553,18 @@
 
               <!-- Individual Volunteer Actions -->
               <div id="individual-actions" style="display:none">
-                <div class="section-header" style="margin-bottom:14px;">
-                  <span class="section-title">🤝 Volunteer</span>
+                  <div class="section-header" style="margin-bottom:14px;">
+                  <span class="section-title">Volunteer</span>
                 </div>
                 <div class="action-cards-row">
                   <div class="action-card" id="browse-food-ind-btn">
-                    <span class="action-card-icon">🚚</span>
+                    <span class="action-card-icon" data-icon="truck"></span>
                     <div class="action-card-title">Help Deliver Food</div>
                     <div class="action-card-desc">Volunteer to pick up and deliver food to those in need.</div>
                     <button class="btn btn-primary btn-sm">Find Deliveries</button>
                   </div>
                   <div class="action-card" style="cursor:default;" onclick="App.showPage('map')">
-                    <span class="action-card-icon">🗺️</span>
+                    <span class="action-card-icon" data-icon="file"></span>
                     <div class="action-card-title">Nearby Donations</div>
                     <div class="action-card-desc">See what donations are waiting to be picked up around you.</div>
                     <button class="btn btn-ghost btn-sm">View Map</button>
@@ -503,29 +572,16 @@
                 </div>
               </div>
 
-              <!-- Decomposition Center Actions -->
-              <div id="decomp-actions" style="display:none">
-                <div class="section-header" style="margin-bottom:14px;">
-                  <span class="section-title">♻️ Composting Requests</span>
-                </div>
-                <div class="action-cards-row">
-                  <div class="action-card" id="view-decomp-btn">
-                    <span class="action-card-icon">📋</span>
-                    <div class="action-card-title">View Requests</div>
-                    <div class="action-card-desc">View and manage incoming composting requests.</div>
-                    <button class="btn btn-primary btn-sm">View Requests</button>
-                  </div>
-                </div>
-              </div>
+              
 
             </div>
 
             <div class="dashboard-side">
               <div class="card">
-                <h3>📋 Recent Activity</h3>
+                <h3>Recent Activity</h3>
                 <div id="recent-activity" class="activity-list">
                   <div class="empty-state">
-                    <img src="logo.png" alt="Servio" class="empty-state-logo" />
+                    <span class="logo-mark"><img src="assets/logo-mark.png" alt="Servio" /></span>
                     <span>No recent activity.</span>
                   </div>
                 </div>
@@ -542,25 +598,26 @@
       <section class="page hidden" id="page-food-list">
         <div class="food-list-wrapper">
           <div class="page-header slide-up">
+            <button class="btn btn-ghost btn-sm back-btn page-back-btn" data-always-visible="false"><span class="btn-icon btn-icon-left" data-icon="arrow-left"></span> Back</button>
             <h2>Available Donations</h2>
             <p>Find and claim food donations near you</p>
           </div>
 
           <!-- Filter Bar -->
           <div class="filter-bar slide-up">
-            <span style="font-size:1rem;">🔽</span>
+            <span style="font-size:1rem;"></span>
             <select id="food-filter-type">
               <option value="">All Types</option>
-              <option value="veg">🥦 Vegetarian</option>
-              <option value="non-veg">🍗 Non-Veg</option>
+              <option value="veg">Vegetarian</option>
+              <option value="non-veg">Non-Veg</option>
             </select>
             <select id="food-filter-quality">
               <option value="">All Quality</option>
-              <option value="fresh">✨ Fresh</option>
-              <option value="good">👍 Good</option>
-              <option value="average">🆗 Average</option>
+              <option value="fresh">Fresh</option>
+              <option value="good">Good</option>
+              <option value="average">Average</option>
             </select>
-            <button class="btn btn-teal btn-sm" id="apply-filter-btn">Apply Filter</button>
+            <button class="btn btn-teal btn-sm" id="apply-filter-btn">Apply Filter <span class="btn-icon btn-icon-right" data-icon="sliders"></span></button>
           </div>
 
           <!-- Food Grid -->
@@ -576,7 +633,8 @@
       <section class="page hidden" id="page-map">
         <div class="map-wrapper">
           <div class="page-header slide-up">
-            <h2>📍 Food Map</h2>
+            <button class="btn btn-ghost btn-sm back-btn page-back-btn" data-always-visible="false"><span class="btn-icon btn-icon-left" data-icon="arrow-left"></span> Back</button>
+            <h2>Food Map</h2>
             <p>See donations and recipients near you</p>
           </div>
           <div id="map-container" class="map-container"></div>
@@ -590,10 +648,11 @@
         <div class="notif-wrapper">
           <div class="page-header slide-up" style="display:flex;align-items:center;justify-content:space-between;">
             <div>
-              <h2>🔔 Notifications</h2>
+              <button class="btn btn-ghost btn-sm back-btn page-back-btn" data-always-visible="false"><span class="btn-icon btn-icon-left" data-icon="arrow-left"></span> Back</button>
+              <h2>Notifications</h2>
               <p>Stay updated on your donations &amp; requests</p>
             </div>
-            <button class="btn btn-ghost btn-sm" id="mark-all-read-btn">Mark all read</button>
+            <button class="btn btn-ghost btn-sm" id="mark-all-read-btn"><span class="btn-icon btn-icon-left" data-icon="check"></span> Mark all read</button>
           </div>
           <div id="notif-list" class="notif-list">
             <div class="loading-spinner"></div>
@@ -606,7 +665,7 @@
       <!-- ─────────────────────────────── -->
       <section class="page hidden" id="page-food-detail">
         <div class="detail-wrapper">
-          <button class="btn btn-ghost btn-sm back-btn" id="back-from-detail">← Back to Donations</button>
+          <button class="btn btn-ghost btn-sm back-btn" id="back-from-detail"><span class="btn-icon btn-icon-left" data-icon="arrow-left"></span> Back to Donations</button>
           <div id="food-detail-content" class="food-detail-content"></div>
         </div>
       </section>
@@ -616,23 +675,23 @@
     <!-- ===== BOTTOM NAV (Mobile) ===== -->
     <nav class="bottom-nav" id="bottom-nav">
       <button class="bottom-nav-item active" data-page="dashboard" id="bn-dashboard">
-        <span class="nav-icon">🏠</span>
+        <span class="nav-icon" data-icon="home"></span>
         <span class="nav-label">Home</span>
       </button>
       <button class="bottom-nav-item" data-page="food-list" id="bn-food-list">
-        <span class="nav-icon">🍱</span>
+        <span class="nav-icon" data-icon="food"></span>
         <span class="nav-label">Food</span>
       </button>
       <button class="bottom-nav-item" data-page="map" id="bn-map">
-        <span class="nav-icon">📍</span>
+        <span class="nav-icon" data-icon="map"></span>
         <span class="nav-label">Nearby</span>
       </button>
       <button class="bottom-nav-item" data-page="notifications" id="bn-notifications">
-        <span class="nav-icon">🔔</span>
+        <span class="nav-icon" data-icon="bell"></span>
         <span class="nav-label">Alerts</span>
       </button>
       <button class="bottom-nav-item" id="bn-profile">
-        <span class="nav-icon">👤</span>
+        <span class="nav-icon" data-icon="user"></span>
         <span class="nav-label">Profile</span>
       </button>
     </nav>
@@ -645,56 +704,77 @@
   <div class="modal-overlay hidden" id="modal-post-food">
     <div class="modal slide-up">
       <div class="modal-header">
-        <h3>🍱 Post Surplus Food</h3>
-        <button class="modal-close" data-modal="modal-post-food">✕</button>
+        <h3>Post Surplus Food</h3>
+        <button class="modal-close" data-modal="modal-post-food" title="Close"><span data-icon="x"></span></button>
       </div>
       <form id="post-food-form" class="modal-form">
         <div class="form-row">
           <div class="form-group">
             <label>Organization Name</label>
-            <input type="text" id="pf-org" placeholder="Your hotel / restaurant name" required />
+            <div class="input-icon-group">
+              <span class="input-icon" data-icon="user"></span>
+              <input type="text" id="pf-org" class="with-icon" placeholder="Your hotel / restaurant name" required />
+            </div>
           </div>
           <div class="form-group">
             <label>Food Type</label>
-            <select id="pf-type" required>
-              <option value="">Select type</option>
-              <option value="veg">🥦 Vegetarian</option>
-              <option value="non-veg">🍗 Non-Vegetarian</option>
-            </select>
+            <div class="input-icon-group">
+              <span class="input-icon" data-icon="utensils"></span>
+              <select id="pf-type" class="with-icon" required>
+                <option value="">Select type</option>
+                <option value="veg">Vegetarian</option>
+                <option value="non-veg">Non-Vegetarian</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Quantity (kg)</label>
-            <input type="number" id="pf-qty" placeholder="e.g. 10" min="0.1" step="0.1" required />
+            <div class="input-icon-group">
+              <span class="input-icon" data-icon="package"></span>
+              <input type="number" id="pf-qty" class="with-icon" placeholder="e.g. 10" min="0.1" step="0.1" required />
+            </div>
           </div>
           <div class="form-group">
             <label>Quality</label>
-            <select id="pf-quality" required>
-              <option value="">Select quality</option>
-              <option value="fresh">✨ Fresh</option>
-              <option value="good">👍 Good</option>
-              <option value="average">🆗 Average</option>
-            </select>
+            <div class="input-icon-group">
+              <span class="input-icon" data-icon="shield-check"></span>
+              <select id="pf-quality" class="with-icon" required>
+                <option value="">Select quality</option>
+                <option value="fresh">Fresh</option>
+                <option value="good">Good</option>
+                <option value="average">Average</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label>Expiry Time</label>
-          <input type="datetime-local" id="pf-expiry" required />
+          <div class="input-icon-group">
+            <span class="input-icon" data-icon="calendar"></span>
+            <input type="datetime-local" id="pf-expiry" class="with-icon" required />
+          </div>
         </div>
         <div class="form-group">
           <label>Pickup Address</label>
-          <input type="text" id="pf-address" placeholder="Full pickup address" required />
+          <div class="input-icon-group">
+            <span class="input-icon" data-icon="map-pin"></span>
+            <input type="text" id="pf-address" class="with-icon" placeholder="Full pickup address" required />
+          </div>
         </div>
         <div class="form-group">
-          <button type="button" class="btn btn-ghost btn-sm" id="pf-location-btn">📍 Use My Location</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="pf-location-btn">
+            <span class="btn-icon btn-icon-left" data-icon="map-pin"></span>
+            Use My Location
+          </button>
           <input type="hidden" id="pf-lat" />
           <input type="hidden" id="pf-lon" />
         </div>
         <div class="form-group">
           <label>Photo (optional)</label>
           <div class="file-upload-area">
-            <span>📷 Upload food image</span>
+            <span data-icon="camera">Upload food image</span>
             <small>JPG, PNG up to 10MB</small>
             <input type="file" id="pf-image" accept="image/*,video/*" />
           </div>
@@ -702,91 +782,79 @@
         </div>
         <div class="form-error hidden" id="pf-error"></div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-post-food">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="pf-submit-btn">Post Donation →</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-post-food">
+            <span class="btn-icon btn-icon-left" data-icon="x"></span>
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="pf-submit-btn">
+            Post Donation
+            <span class="btn-icon btn-icon-right" data-icon="arrow-right"></span>
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Decomposition Modal -->
-  <div class="modal-overlay hidden" id="modal-decomp">
-    <div class="modal slide-up">
-      <div class="modal-header">
-        <h3>♻️ Send for Composting</h3>
-        <button class="modal-close" data-modal="modal-decomp">✕</button>
-      </div>
-      <form id="decomp-form" class="modal-form">
-        <div class="form-group">
-          <label>Quantity (kg)</label>
-          <input type="number" id="dc-qty" placeholder="e.g. 5" min="0.1" step="0.1" required />
-        </div>
-        <div class="form-group">
-          <label>Food Type</label>
-          <input type="text" id="dc-type" placeholder="e.g. Mixed, Veg, Cooked" />
-        </div>
-        <div class="form-group">
-          <label>Pickup Address</label>
-          <input type="text" id="dc-address" placeholder="Where to collect from" />
-        </div>
-        <div class="form-error hidden" id="dc-error"></div>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-decomp">Cancel</button>
-          <button type="submit" class="btn btn-teal" id="dc-submit-btn">Submit Request →</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  
 
   <!-- Verification Upload Modal -->
   <div class="modal-overlay hidden" id="modal-verify">
     <div class="modal slide-up">
       <div class="modal-header">
-        <h3>📷 Upload Delivery Proof</h3>
-        <button class="modal-close" data-modal="modal-verify">✕</button>
+        <h3>Upload Delivery Proof</h3>
+        <button class="modal-close" data-modal="modal-verify" title="Close"><span data-icon="x"></span></button>
       </div>
       <form id="verify-form" class="modal-form">
         <input type="hidden" id="verify-food-id" />
         <div class="form-group">
           <label>Photo Proof</label>
           <div class="file-upload-area">
-            <span>📷 Upload delivery photo</span>
+            <span data-icon="camera">Upload delivery photo</span>
             <input type="file" id="verify-image" accept="image/*" />
           </div>
         </div>
         <div class="form-group">
           <label>Video Proof (optional)</label>
           <div class="file-upload-area">
-            <span>🎥 Upload delivery video</span>
+            <span data-icon="video">Upload delivery video</span>
             <input type="file" id="verify-video" accept="video/*" />
           </div>
         </div>
         <div class="form-group">
           <label>Notes</label>
-          <textarea id="verify-notes" placeholder="Any notes about the delivery…" rows="3"></textarea>
+          <div class="input-icon-group">
+            <span class="input-icon" style="top:20px;" data-icon="file"></span>
+            <textarea id="verify-notes" class="with-icon" placeholder="Any notes about the delivery…" rows="3"></textarea>
+          </div>
         </div>
         <div class="form-error hidden" id="verify-error"></div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-verify">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="verify-submit-btn">Upload Proof →</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-modal="modal-verify">
+            <span class="btn-icon btn-icon-left" data-icon="x"></span>
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="verify-submit-btn">
+            Upload Proof
+            <span class="btn-icon btn-icon-right" data-icon="check"></span>
+          </button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- ===== AI ASSISTANT ===== -->
-  <div class="ai-fab" id="ai-fab" title="Servio AI Assistant">🤖</div>
+  <div class="ai-fab" id="ai-fab" title="Servio AI Assistant" data-icon="user"></div>
   <div class="ai-panel hidden" id="ai-panel">
     <div class="ai-panel-header">
-      <span>🤖 Servio AI</span>
-      <button id="ai-close">✕</button>
+      <span>Servio AI</span>
+      <button id="ai-close" title="Close"><span data-icon="x"></span></button>
     </div>
     <div class="ai-messages" id="ai-messages">
-      <div class="ai-msg ai-msg-bot">Hi! I'm Servio AI 👋 I can help you find nearby donations, check expiry warnings, or answer any questions. Ask me anything!</div>
+      <div class="ai-msg ai-msg-bot">Hi! I'm Servio AI. I can help you find nearby donations, check expiry warnings, or answer any questions. Ask me anything!</div>
     </div>
     <div class="ai-input-row">
       <input type="text" id="ai-input" placeholder="Ask me anything…" autocomplete="off" />
-      <button id="ai-send-btn">Send</button>
+      <button id="ai-send-btn">Send <span class="btn-icon btn-icon-right" data-icon="send"></span></button>
     </div>
   </div>
 
@@ -801,6 +869,53 @@
   <script src="js/notifications.js"></script>
   <script src="js/ai.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/icons.js"></script>
+
+  <!-- Cursor spotlight initializer (subtle, performant) -->
+  <script>
+    (function(){
+      const isTouch = matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
+      const spot = document.getElementById('cursor-spot');
+      const container = document.getElementById('cursor-spotlight');
+      if (!spot || !container || isTouch) return;
+
+      let rect = container.getBoundingClientRect();
+      let targetX = rect.width/2, targetY = rect.height/2;
+      let currentX = targetX, currentY = targetY;
+      const ease = 0.12; // smoothing factor
+
+      // Update rect on resize
+      window.addEventListener('resize', () => { rect = container.getBoundingClientRect(); });
+
+      function onMove(e){
+        const clientX = e.clientX || (e.touches && e.touches[0] && e.touches[0].clientX) || 0;
+        const clientY = e.clientY || (e.touches && e.touches[0] && e.touches[0].clientY) || 0;
+        targetX = clientX - rect.left;
+        targetY = clientY - rect.top;
+      }
+
+      // Listen on the auth wrapper only
+      const authWrapper = document.querySelector('.auth-wrapper');
+      authWrapper?.addEventListener('pointermove', onMove, { passive: true });
+      authWrapper?.addEventListener('mousemove', onMove, { passive: true });
+
+      // Subtle idle drift: keep the spotlight slightly offset when mouse leaves
+      authWrapper?.addEventListener('pointerleave', () => {
+        targetX = rect.width/2; targetY = rect.height/3; // gentle resting position
+      });
+
+      function raf(){
+        currentX += (targetX - currentX) * ease;
+        currentY += (targetY - currentY) * ease;
+        // Apply transform using translate3d for compositor
+        spot.style.transform = 'translate3d(' + Math.round(currentX - (spot.offsetWidth/2)) + 'px, ' + Math.round(currentY - (spot.offsetHeight/2)) + 'px, 0)';
+        requestAnimationFrame(raf);
+      }
+
+      // Start loop
+      requestAnimationFrame(raf);
+    })();
+  </script>
 
   <!-- Inline UI enhancements -->
   <script>
@@ -868,6 +983,97 @@
 
     // Sync bottom nav active state when top nav changes
     const origShowPage = window.App && App.showPage ? App.showPage.bind(App) : null;
+
+    (function() {
+      const ambient = document.getElementById('ambient-background');
+      const spot = document.getElementById('ambient-cursor-spot');
+      const particlesContainer = document.getElementById('ambient-particles');
+      if (!ambient || !particlesContainer) return;
+
+      const isTouch = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+      const particleCount = 10;
+      const particles = [];
+      const blob1 = document.querySelector('.ambient-blob-1');
+      const blob2 = document.querySelector('.ambient-blob-2');
+      const glow1 = document.querySelector('.ambient-glow-1');
+      const glow2 = document.querySelector('.ambient-glow-2');
+
+      for (let i = 0; i < particleCount; i += 1) {
+        const particle = document.createElement('div');
+        particle.className = 'ambient-particle';
+        const size = 4 + Math.random() * 4;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        const baseX = Math.random();
+        const baseY = Math.random();
+        particle.style.left = `${baseX * 100}%`;
+        particle.style.top = `${baseY * 100}%`;
+        particle.style.background = i % 2 === 0 ? 'rgba(32,199,190,0.12)' : 'rgba(255,180,90,0.1)';
+        particlesContainer.appendChild(particle);
+        particles.push({ el: particle, baseX, baseY, phase: Math.random() * Math.PI * 2 });
+      }
+
+      let rect = ambient.getBoundingClientRect();
+      let targetX = rect.width / 2;
+      let targetY = rect.height / 2;
+      let restingX = rect.width / 2;
+      let restingY = rect.height / 2;
+
+      const updateRect = () => {
+        rect = ambient.getBoundingClientRect();
+        restingX = rect.width / 2;
+        restingY = rect.height / 2;
+      };
+      window.addEventListener('resize', updateRect);
+
+      function onMove(event) {
+        if (isTouch) return;
+        const clientX = event.clientX || (event.touches && event.touches[0] && event.touches[0].clientX) || restingX;
+        const clientY = event.clientY || (event.touches && event.touches[0] && event.touches[0].clientY) || restingY;
+        targetX = clientX - rect.left;
+        targetY = clientY - rect.top;
+      }
+
+      if (!isTouch) {
+        window.addEventListener('pointermove', onMove, { passive: true });
+        window.addEventListener('mousemove', onMove, { passive: true });
+        window.addEventListener('pointerleave', () => {
+          targetX = restingX;
+          targetY = restingY;
+        });
+      }
+
+      function animate() {
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const diffX = targetX - centerX;
+        const diffY = targetY - centerY;
+        const moveX = diffX * 0.03;
+        const moveY = diffY * 0.025;
+
+        if (blob1) blob1.style.transform = `translate3d(${moveX * 0.18}px, ${moveY * 0.14}px, 0)`;
+        if (blob2) blob2.style.transform = `translate3d(${moveX * 0.1}px, ${moveY * 0.08}px, 0)`;
+        if (glow1) glow1.style.transform = `translate3d(${moveX * 0.24}px, ${moveY * 0.18}px, 0)`;
+        if (glow2) glow2.style.transform = `translate3d(${moveX * 0.12}px, ${moveY * 0.1}px, 0)`;
+
+        if (spot && !isTouch) {
+          spot.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+        }
+
+        const time = Date.now() * 0.0008;
+        particles.forEach((particle, index) => {
+          const driftX = Math.sin(time + particle.phase) * 10;
+          const driftY = Math.cos(time + particle.phase) * 8;
+          const particleX = ((particle.baseX - 0.5) * rect.width * 0.04) + diffX * 0.02 + driftX;
+          const particleY = ((particle.baseY - 0.5) * rect.height * 0.03) + diffY * 0.015 + driftY;
+          particle.el.style.transform = `translate3d(${particleX}px, ${particleY}px, 0)`;
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    })();
   </script>
 </body>
 </html>

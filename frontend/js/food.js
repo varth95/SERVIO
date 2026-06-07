@@ -15,8 +15,10 @@ const Food = {
       Food.currentList = res.data;
       Food.applyFilters();
     } else {
-      document.getElementById("food-grid").innerHTML =
-        '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>Failed to load food posts.</span></div>';
+      const grid = document.getElementById("food-grid");
+      grid.innerHTML =
+        '<div class="empty-state" style="grid-column:1/-1"><span class="empty-state-icon" data-icon="package"></span><span>Failed to load food posts.</span></div>';
+      Icons.attach();
     }
   },
 
@@ -84,11 +86,8 @@ const Food = {
   renderGrid(foods) {
     const grid = document.getElementById("food-grid");
     if (!foods.length) {
-        <div class="empty-state" style="grid-column:1/-1">
-          <img src="logo.png" alt="Servio" class="empty-state-logo" />
-          <span>No food donations found right now.</span>
-          <p style="font-size:0.82rem;color:var(--text-muted);">Check back soon or broaden your filters.</p>
-        </div>`;
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span class="empty-state-icon" data-icon="package-search"></span><span>No food donations found right now.</span><p style="font-size:0.82rem;color:var(--text-muted);">Check back soon or broaden your filters.</p></div>`;
+        Icons.attach();
       return;
     }
 
@@ -99,6 +98,7 @@ const Food = {
       card.classList.add('slide-up');
       grid.appendChild(card);
     });
+    Icons.attach();
   },
 
   createCard(food) {
@@ -110,15 +110,15 @@ const Food = {
     const now = new Date();
     const hoursLeft = Math.round((expiry - now) / 3600000);
     const expiryText =
-      hoursLeft < 0 ? "⚠️ Expired"
-      : hoursLeft < 2 ? `⚠️ ${hoursLeft}h left`
-      : hoursLeft < 24 ? `⏰ ${hoursLeft}h left`
+      hoursLeft < 0 ? "Expired"
+      : hoursLeft < 2 ? `${hoursLeft}h left`
+      : hoursLeft < 24 ? `${hoursLeft}h left`
       : expiry.toLocaleDateString();
     const expiryColor = hoursLeft < 0 ? 'color:var(--danger);font-weight:700;'
       : hoursLeft < 2 ? 'color:var(--warning);font-weight:700;' : '';
 
-    const typeEmoji = food.food_type === 'veg' ? '🥦' : '🍗';
-    const qualityEmoji = food.quality === 'fresh' ? '✨' : food.quality === 'good' ? '👍' : '🆗';
+    const typeEmoji = '';
+    const qualityEmoji = '';
 
     // Image section
     const imgSection = food.image_path
@@ -128,22 +128,21 @@ const Food = {
     card.innerHTML = `
       <div class="food-card-img">
         ${imgSection}
-        <button class="food-card-add-btn" title="View details">+</button>
+        <button class="food-card-add-btn" title="View details"><span class="btn-icon" data-icon="search"></span></button>
       </div>
       <div class="food-card-body">
         <div class="food-card-title">${escapeHtml(food.org_name)}</div>
         <div class="food-card-meta">
-          <span class="badge badge-${food.food_type === 'veg' ? 'veg' : 'nonveg'}">${typeEmoji} ${food.food_type === 'veg' ? 'Veg' : 'Non-Veg'}</span>
-          <span class="badge badge-${food.quality}">${qualityEmoji} ${food.quality}</span>
+          <span class="badge badge-${food.food_type === 'veg' ? 'veg' : 'nonveg'}">${food.food_type === 'veg' ? 'Veg' : 'Non-Veg'}</span>
+          <span class="badge badge-${food.quality}">${food.quality}</span>
           <span class="badge badge-${food.status}">${food.status}</span>
         </div>
         <div class="food-card-location">
-          <span>📍</span>
           <span>${escapeHtml((food.pickup_address || '—').substring(0, 40))}${food.pickup_address && food.pickup_address.length > 40 ? '…' : ''}</span>
         </div>
       </div>
-      <div class="food-card-footer">
-        <span class="food-qty">⚖️ ${food.quantity} kg</span>
+        <div class="food-card-footer">
+        <span class="food-qty">${food.quantity} kg</span>
         <span class="food-expiry" style="${expiryColor}">${expiryText}</span>
       </div>
     `;
@@ -179,8 +178,8 @@ const Food = {
     const now = new Date();
     const hoursLeft = Math.round((expiry - now) / 3600000);
     const expiryColor = hoursLeft < 0 ? 'var(--danger)' : hoursLeft < 4 ? 'var(--warning)' : 'var(--text)';
-    const typeEmoji = food.food_type === 'veg' ? '🥦' : '🍗';
-    const qualityEmoji = food.quality === 'fresh' ? '✨' : food.quality === 'good' ? '👍' : '🆗';
+    const typeEmoji = '';
+    const qualityEmoji = '';
 
     // Hero image
     const heroContent = food.image_path
@@ -199,34 +198,34 @@ const Food = {
           <span class="badge badge-${food.status}" style="font-size:0.8rem;padding:6px 14px;">● ${food.status}</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-          <span class="badge badge-${food.food_type === 'veg' ? 'veg' : 'nonveg'}">${typeEmoji} ${food.food_type === 'veg' ? 'Vegetarian' : 'Non-Veg'}</span>
-          <span class="badge badge-${food.quality}">${qualityEmoji} ${food.quality.charAt(0).toUpperCase() + food.quality.slice(1)}</span>
+          <span class="badge badge-${food.food_type === 'veg' ? 'veg' : 'nonveg'}">${food.food_type === 'veg' ? 'Vegetarian' : 'Non-Veg'}</span>
+          <span class="badge badge-${food.quality}">${food.quality.charAt(0).toUpperCase() + food.quality.slice(1)}</span>
         </div>
 
         <div class="detail-info-grid">
           <div class="detail-field">
-            <label>⚖️ Quantity Available</label>
+            <label><span class="detail-field-icon" data-icon="package"></span> Quantity Available</label>
             <p>${food.quantity} kg</p>
           </div>
           <div class="detail-field">
-            <label>⏰ Expiry Time</label>
+            <label><span class="detail-field-icon" data-icon="clock"></span> Expiry Time</label>
             <p style="color:${expiryColor}">${expiry.toLocaleString()}</p>
           </div>
           <div class="detail-field">
-            <label>📍 Pickup Address</label>
+            <label><span class="detail-field-icon" data-icon="map-pin"></span> Pickup Address</label>
             <p>${escapeHtml(food.pickup_address || '—')}</p>
           </div>
           <div class="detail-field">
-            <label>👤 Donated By</label>
+            <label><span class="detail-field-icon" data-icon="user"></span> Donated By</label>
             <p>${escapeHtml(food.donor_name || '—')}</p>
           </div>
           ${food.donor_phone ? `
           <div class="detail-field">
-            <label>📞 Contact</label>
+            <label><span class="detail-field-icon" data-icon="phone"></span> Contact</label>
             <p><a href="tel:${escapeHtml(food.donor_phone)}" style="color:var(--teal);font-weight:600;">${escapeHtml(food.donor_phone)}</a></p>
           </div>` : ''}
           <div class="detail-field">
-            <label>🕐 Posted On</label>
+            <label><span class="detail-field-icon" data-icon="calendar"></span> Posted On</label>
             <p>${new Date(food.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</p>
           </div>
         </div>
@@ -244,23 +243,23 @@ const Food = {
     container.innerHTML = '';
     const buttons = [];
 
-    if (role === 'recipient' || role === 'individual') {
+      if (role === 'recipient' || role === 'individual') {
       if (food.status === 'available') {
-        buttons.push({ label: '✅ Claim This Donation', cls: 'btn-primary', fn: () => Food.claimFood(food.id) });
+        buttons.push({ label: 'Claim This Donation', cls: 'btn-primary', icon: 'package', fn: () => Food.claimFood(food.id) });
       }
       if (food.status === 'waiting' && food.claimed_by === Auth.currentUser?.id) {
-        buttons.push({ label: '🚚 Mark as Delivered', cls: 'btn-teal', fn: () => Food.markDelivered(food.id) });
-        buttons.push({ label: '📷 Upload Proof', cls: 'btn-secondary', fn: () => openVerifyModal(food.id) });
-        buttons.push({ label: '⚠️ Unable to Deliver', cls: 'btn-danger', fn: () => Food.markExpired(food.id) });
+        buttons.push({ label: 'Mark as Delivered', cls: 'btn-teal', icon: 'check', fn: () => Food.markDelivered(food.id) });
+        buttons.push({ label: 'Upload Proof', cls: 'btn-secondary', icon: 'camera', fn: () => openVerifyModal(food.id) });
+        buttons.push({ label: 'Unable to Deliver', cls: 'btn-danger', icon: 'trash', fn: () => Food.markExpired(food.id) });
       }
     }
 
-    if (role === 'donor' && food.donor_id === Auth.currentUser?.id) {
+      if (role === 'donor' && food.donor_id === Auth.currentUser?.id) {
       if (food.status === 'claimed') {
-        buttons.push({ label: '✅ Confirm Receipt', cls: 'btn-success', fn: () => Food.markReceived(food.id) });
+        buttons.push({ label: 'Confirm Receipt', cls: 'btn-success', icon: 'check', fn: () => Food.markReceived(food.id) });
       }
       if (food.status === 'available') {
-        buttons.push({ label: '⚠️ Mark Almost Wasted', cls: 'btn-danger', fn: () => Food.markExpired(food.id) });
+        buttons.push({ label: 'Mark Almost Wasted', cls: 'btn-danger', icon: 'trash', fn: () => Food.markExpired(food.id) });
       }
     }
 
@@ -268,22 +267,27 @@ const Food = {
       // Show status info if no actions available
       const info = document.createElement('div');
       info.style.cssText = 'flex:1;text-align:center;color:var(--text-muted);font-size:0.88rem;padding:4px 0;';
-      info.textContent = food.status === 'delivered' ? '✅ This donation has been delivered.' :
-        food.status === 'expired' ? '⚠️ This donation has expired.' :
-        food.status === 'claimed' ? '🔵 This donation is currently claimed.' : '🔒 No actions available.';
+      info.textContent = food.status === 'delivered' ? 'This donation has been delivered.' :
+        food.status === 'expired' ? 'This donation has expired.' :
+        food.status === 'claimed' ? 'This donation is currently claimed.' : 'No actions available.';
       container.appendChild(info);
       return;
     }
 
-    buttons.forEach(({ label, cls, fn }) => {
+    buttons.forEach(({ label, cls, fn, icon }) => {
       const btn = document.createElement('button');
       btn.className = `btn ${cls}`;
       btn.style.flex = '1';
       btn.style.height = '52px';
-      btn.textContent = label;
+      btn.style.display = 'inline-flex';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.gap = '8px';
+      btn.innerHTML = `${label} <span class="btn-icon btn-icon-right" data-icon="${icon}"></span>`;
       btn.addEventListener('click', fn);
       container.appendChild(btn);
     });
+    Icons.attach();
   },
 
   async claimFood(foodId) {
@@ -317,10 +321,10 @@ const Food = {
   },
 
   async markExpired(foodId) {
-    if (!confirm("Mark this food as expired/wasted? It will be forwarded to a decomposition center.")) return;
+    if (!confirm("Mark this food as expired/wasted? It will be marked expired and handled appropriately.")) return;
     const res = await Api.food.expire(foodId);
     if (res.ok) {
-      showToast("Food marked as expired and forwarded to decomposition.", "warning");
+      showToast("Food marked as expired and handled.", "warning");
       Food.showDetail(foodId);
     } else {
       showToast(res.data.error || "Failed to update status.", "error");
@@ -338,15 +342,15 @@ function initPostFoodUI() {
 
   pfLocationBtn.addEventListener("click", () => {
     if (!navigator.geolocation) return;
-    pfLocationBtn.textContent = "📍 Getting...";
+    pfLocationBtn.textContent = "Getting...";
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         document.getElementById("pf-lat").value = pos.coords.latitude;
         document.getElementById("pf-lon").value = pos.coords.longitude;
-        pfLocationBtn.textContent = "✅ Location set";
+        pfLocationBtn.textContent = "Location set";
       },
       () => {
-        pfLocationBtn.textContent = "📍 Use My Location";
+        pfLocationBtn.textContent = "Use My Location";
         showToast("Could not get location.", "warning");
       }
     );
@@ -396,41 +400,7 @@ function initPostFoodUI() {
   });
 }
 
-// ===== DECOMPOSITION MODAL =====
-
-function initDecompUI() {
-  const form = document.getElementById("decomp-form");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const errorEl = document.getElementById("dc-error");
-    const submitBtn = form.querySelector("button[type=submit]");
-    errorEl.classList.add("hidden");
-
-    const data = {
-      quantity: parseFloat(document.getElementById("dc-qty").value),
-      food_type: document.getElementById("dc-type").value,
-      address: document.getElementById("dc-address").value,
-    };
-
-    submitBtn.textContent = "Submitting...";
-    submitBtn.disabled = true;
-
-    const res = await Api.decomposition.create(data);
-
-    submitBtn.textContent = "Submit Request";
-    submitBtn.disabled = false;
-
-    if (res.ok) {
-      closeModal("modal-decomp");
-      form.reset();
-      showToast(`Decomposition request sent to: ${res.data.assigned_to}`, "success");
-    } else {
-      errorEl.textContent = res.data.error || "Failed to submit request.";
-      errorEl.classList.remove("hidden");
-    }
-  });
-}
+// Other food UI handlers
 
 // ===== VERIFICATION MODAL =====
 

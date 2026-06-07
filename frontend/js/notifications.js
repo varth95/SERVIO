@@ -18,12 +18,14 @@ const Notifications = {
     const container = document.getElementById("notif-list");
 
     if (!res.ok) {
-      container.innerHTML = '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>Failed to load notifications.</span></div>';
+      container.innerHTML = '<div class="empty-state"><span class="empty-state-icon" data-icon="bell-off"></span><span>Failed to load notifications.</span></div>';
+      Icons.attach();
       return;
     }
 
     if (!res.data.length) {
-      container.innerHTML = '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>No notifications yet.</span></div>';
+      container.innerHTML = '<div class="empty-state"><span class="empty-state-icon" data-icon="bell-off"></span><span>No notifications yet.</span></div>';
+      Icons.attach();
       return;
     }
 
@@ -37,16 +39,18 @@ const Notifications = {
       const time = new Date(n.created_at).toLocaleString();
 
       item.innerHTML = `
-        <div class="notif-icon">${icon}</div>
+        <div class="notif-icon"><span class="notif-icon-inner" data-icon="${icon}"></span></div>
         <div class="notif-body">
           <div class="notif-msg">${_escapeHtml(n.message)}</div>
           <div class="notif-time">${time}</div>
         </div>
-        ${!n.is_read ? '<button class="btn btn-outline btn-sm" style="flex-shrink:0;" onclick="Notifications.markRead(' + n.id + ', this)">Mark read</button>' : ""}
+        ${!n.is_read ? '<button class="btn btn-outline btn-sm" style="flex-shrink:0; display: inline-flex; align-items: center; gap: 6px;" onclick="Notifications.markRead(' + n.id + ', this)"><span class="btn-icon btn-icon-left" data-icon="check"></span> Mark read</button>' : ""}
       `;
 
       container.appendChild(item);
     });
+
+    Icons.attach();
   },
 
   async markRead(id, btn) {
@@ -77,16 +81,14 @@ const Notifications = {
 
   getIcon(type) {
     const icons = {
-      food_posted: "🍱",
-      food_claimed: "✅",
-      delivery_started: "🚚",
-      food_received: "🎉",
-      verification_uploaded: "📷",
-      decomposition_assigned: "♻️",
-      decomposition_collected: "✅",
-      general: "🔔",
+      food_posted: "package",
+      food_claimed: "check",
+      delivery_started: "truck",
+      food_received: "users",
+      verification_uploaded: "camera",
+      general: "bell",
     };
-    return icons[type] || "🔔";
+    return icons[type] || "bell";
   },
 };
 

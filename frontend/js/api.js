@@ -68,12 +68,7 @@ const Api = {
     get: (foodId) => Api.get(`/verification/${foodId}`),
   },
 
-  // Decomposition
-  decomposition: {
-    create: (data) => Api.post("/decomposition/request", data),
-    list: () => Api.get("/decomposition/requests"),
-    collect: (id) => Api.post(`/decomposition/requests/${id}/collect`),
-  },
+  // Decomposition API removed from client (server-side automation remains)
 
   // AI
   ai: {

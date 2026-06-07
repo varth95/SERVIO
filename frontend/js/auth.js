@@ -87,18 +87,18 @@ function initAuthUI() {
       showToast("Geolocation not supported by your browser.", "error");
       return;
     }
-    getLocationBtn.textContent = "📍 Getting location...";
+    getLocationBtn.textContent = "Getting location...";
     getLocationBtn.disabled = true;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         document.getElementById("reg-lat").value = pos.coords.latitude;
         document.getElementById("reg-lon").value = pos.coords.longitude;
-        getLocationBtn.textContent = "✅ Location captured";
+        getLocationBtn.textContent = "Location captured";
         getLocationBtn.disabled = false;
       },
       () => {
         showToast("Could not get location. Please enter address manually.", "warning");
-        getLocationBtn.textContent = "📍 Use My Location";
+        getLocationBtn.textContent = "Use My Location";
         getLocationBtn.disabled = false;
       }
     );

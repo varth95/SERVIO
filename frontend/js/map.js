@@ -41,7 +41,7 @@ const MapView = {
           display: flex; align-items: center; justify-content: center;
           font-size: 1.1rem; box-shadow: 0 4px 12px rgba(255, 180, 90, 0.3);
           border: 2px solid white;
-        ">${food.food_type === "veg" ? "🥦" : "🍗"}</div>`,
+        ">${food.food_type === "veg" ? "Veg" : "Non-Veg"}</div>`,
         iconSize: [36, 36],
         iconAnchor: [18, 18],
       });
@@ -51,8 +51,8 @@ const MapView = {
         .bindPopup(`
           <div style="min-width:200px; font-family: Inter, sans-serif; padding: 4px;">
             <strong style="font-size:1rem; color: #2d3748;">${food.org_name}</strong><br/>
-            <span style="color:#718096; font-size:0.85rem; display: inline-block; margin-top: 4px;">${food.food_type === "veg" ? "🥦 Veg" : "🍗 Non-Veg"} · ${food.quantity}kg · ${food.quality}</span><br/>
-            <span style="color:#718096; font-size:0.8rem; display: inline-block; margin-top: 2px;">📍 ${food.pickup_address}</span><br/>
+            <span style="color:#718096; font-size:0.85rem; display: inline-block; margin-top: 4px;">${food.food_type === "veg" ? "Veg" : "Non-Veg"} · ${food.quantity}kg · ${food.quality}</span><br/>
+            <span style="color:#718096; font-size:0.8rem; display: inline-block; margin-top: 2px;">${food.pickup_address}</span><br/>
             <button onclick="Food.showDetail(${food.id}); App.showPage('food-detail');"
               style="margin-top:10px; width: 100%; padding:8px 16px; background:#20C7BE; color:white;
                      border:none; border-radius:20px; cursor:pointer; font-size:0.8rem; font-weight:600;
@@ -77,7 +77,7 @@ const MapView = {
           width: 40px; height: 40px; display: flex; align-items: center;
           justify-content: center; font-size: 1.2rem;
           box-shadow: 0 4px 12px rgba(32, 199, 190, 0.4); border: 3px solid white;
-        ">👤</div>`,
+        "></div>`,
         iconSize: [40, 40],
         iconAnchor: [20, 20],
       });

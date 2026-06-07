@@ -16,7 +16,6 @@ from routes.auth import auth_bp
 from routes.food import food_bp
 from routes.notifications import notif_bp
 from routes.verification import verify_bp
-from routes.decomposition import decomp_bp
 from routes.ai_assistant import ai_bp
 
 # Absolute path to the frontend folder
@@ -40,7 +39,6 @@ app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(food_bp, url_prefix="/api/food")
 app.register_blueprint(notif_bp, url_prefix="/api/notifications")
 app.register_blueprint(verify_bp, url_prefix="/api/verification")
-app.register_blueprint(decomp_bp, url_prefix="/api/decomposition")
 app.register_blueprint(ai_bp, url_prefix="/api/ai")
 
 # Serve uploaded files
