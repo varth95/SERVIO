@@ -22,9 +22,15 @@ const App = {
       if (isLoggedIn) {
         App.onLogin();
       } else {
-        App.showPage('login');
-        document.getElementById('navbar').classList.add('hidden');
+        App.showPage('landing');
+        document.getElementById('navbar').classList.remove('hidden');
         document.getElementById('bottom-nav').classList.add('hidden');
+        
+        // Show public nav sections
+        document.getElementById('nav-links-public').classList.remove('hidden');
+        document.getElementById('nav-links-private').classList.add('hidden');
+        document.getElementById('nav-user-public').classList.remove('hidden');
+        document.getElementById('nav-user-private').classList.add('hidden');
       }
     }, 1800);
 
@@ -44,6 +50,13 @@ const App = {
     const user = Auth.currentUser;
     document.getElementById('navbar').classList.remove('hidden');
     document.getElementById('bottom-nav').classList.remove('hidden');
+
+    // Switch to private nav
+    document.getElementById('nav-links-public').classList.add('hidden');
+    document.getElementById('nav-links-private').classList.remove('hidden');
+    document.getElementById('nav-user-public').classList.add('hidden');
+    document.getElementById('nav-user-private').classList.remove('hidden');
+
     document.getElementById('nav-username').textContent = user.name;
     document.getElementById('nav-role-badge').textContent = user.role;
 
@@ -58,9 +71,16 @@ const App = {
 
   onLogout() {
     if (App._notifInterval) clearInterval(App._notifInterval);
-    document.getElementById('navbar').classList.add('hidden');
+    document.getElementById('navbar').classList.remove('hidden');
     document.getElementById('bottom-nav').classList.add('hidden');
-    App.showPage('login');
+
+    // Switch to public nav
+    document.getElementById('nav-links-public').classList.remove('hidden');
+    document.getElementById('nav-links-private').classList.add('hidden');
+    document.getElementById('nav-user-public').classList.remove('hidden');
+    document.getElementById('nav-user-private').classList.add('hidden');
+
+    App.showPage('landing');
     showToast('Logged out successfully.', 'success');
   },
 
@@ -77,8 +97,18 @@ const App = {
 
     App.currentPage = pageId;
 
+    // Toggle public links visibility based on current page
+    const pubLinks = document.getElementById('nav-links-public');
+    if (pubLinks) {
+      if (pageId === 'landing') {
+        pubLinks.classList.remove('hidden');
+      } else {
+        pubLinks.classList.add('hidden');
+      }
+    }
+
     // Update top nav active state
-    document.querySelectorAll('.nav-link').forEach(link => {
+    document.querySelectorAll('#nav-links-private .nav-link').forEach(link => {
       link.classList.toggle('active', link.dataset.page === pageId);
     });
 
@@ -98,8 +128,27 @@ const App = {
   },
 
   initNavigation() {
-    // Top nav links
-    document.querySelectorAll('.nav-link').forEach(link => {
+    // Top nav brand click (logo)
+    document.querySelector('.nav-brand').style.cursor = 'pointer';
+    document.querySelector('.nav-brand').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (Auth.isLoggedIn()) {
+        App.showPage('dashboard');
+      } else {
+        App.showPage('landing');
+      }
+    });
+
+    // Public Sign In / Get Started triggers
+    const showLoginPanel = () => {
+      App.showPage('login');
+    };
+    
+    document.getElementById('nav-get-started-btn')?.addEventListener('click', showLoginPanel);
+    document.getElementById('landing-hero-start-btn')?.addEventListener('click', showLoginPanel);
+
+    // Top private links click
+    document.querySelectorAll('#nav-links-private .nav-link').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
         if (!Auth.isLoggedIn()) return;
@@ -130,6 +179,7 @@ const App = {
     document.getElementById('browse-food-ind-btn')?.addEventListener('click', () => App.showPage('food-list'));
     document.getElementById('view-decomp-btn')?.addEventListener('click', () => App.loadDecompDashboard());
   },
+
 
   initModals() {
     // Close modal on overlay click or close button
@@ -233,7 +283,7 @@ const App = {
     if (!res.ok || !res.data.length) {
       container.innerHTML = `
         <div class="empty-state">
-          <span class="empty-state-icon">📭</span>
+          <img src="logo.png" alt="Servio" class="empty-state-logo" />
           <span>No recent activity.</span>
         </div>`;
       return;
@@ -263,7 +313,7 @@ const App = {
 
     const container = document.getElementById("recent-activity");
     if (!res.data.length) {
-      container.innerHTML = '<p class="empty-state">No decomposition requests assigned.</p>';
+      container.innerHTML = '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>No decomposition requests assigned.</span></div>';
       return;
     }
 

@@ -16,7 +16,7 @@ const Food = {
       Food.applyFilters();
     } else {
       document.getElementById("food-grid").innerHTML =
-        '<p class="empty-state">Failed to load food posts.</p>';
+        '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>Failed to load food posts.</span></div>';
     }
   },
 
@@ -84,9 +84,8 @@ const Food = {
   renderGrid(foods) {
     const grid = document.getElementById("food-grid");
     if (!foods.length) {
-      grid.innerHTML = `
         <div class="empty-state" style="grid-column:1/-1">
-          <span class="empty-state-icon">🍽️</span>
+          <img src="logo.png" alt="Servio" class="empty-state-logo" />
           <span>No food donations found right now.</span>
           <p style="font-size:0.82rem;color:var(--text-muted);">Check back soon or broaden your filters.</p>
         </div>`;

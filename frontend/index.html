@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Servio — Connect. Share. Nourish.</title>
   <meta name="description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
+  
+  <!-- Favicon & Brand Icons -->
+  <link rel="icon" type="image/png" href="logo.png" />
+  
+  <!-- SEO & Open Graph Metadata -->
+  <meta property="og:title" content="Servio — Connect. Share. Nourish." />
+  <meta property="og:description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Servio — Connect. Share. Nourish." />
+  <meta name="twitter:description" content="Servio is a community food donation platform connecting food donors with recipients to reduce food waste and fight hunger." />
+  <meta name="twitter:image" content="logo.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,13 +37,16 @@
 
   <!-- ===== LOADING SCREEN ===== -->
   <div id="loading-screen" class="loading-screen">
-    <div class="loading-logo">
-      <span class="logo-icon">🍱</span>
-      <h1>Servio</h1>
-      <p>Connect. Share. Nourish.</p>
-      <div class="loading-bar"><div class="loading-fill"></div></div>
+    <div class="loading-logo-modern">
+      <img src="logo.png" alt="Servio Logo" class="loading-logo-img" />
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </div>
+
 
   <!-- ===== APP WRAPPER ===== -->
   <div id="app" class="app hidden">
@@ -38,10 +54,18 @@
     <!-- ===== TOP NAVBAR ===== -->
     <nav class="navbar" id="navbar">
       <div class="nav-brand">
-        <span class="logo-icon">🍱</span>
-        <span class="brand-name">Servio</span>
+        <img src="logo.png" alt="Servio Logo" class="brand-logo-img" />
       </div>
-      <div class="nav-links" id="nav-links">
+      
+      <!-- Public Links (unauthenticated) -->
+      <div class="nav-links" id="nav-links-public">
+        <a href="#landing-features" class="nav-link">Features</a>
+        <a href="#landing-impact" class="nav-link">Impact</a>
+        <a href="#landing-testimonials" class="nav-link">Stories</a>
+      </div>
+
+      <!-- Private Links (authenticated) -->
+      <div class="nav-links hidden" id="nav-links-private">
         <a href="#" class="nav-link active" data-page="dashboard" id="nl-dashboard">🏠 Home</a>
         <a href="#" class="nav-link" data-page="food-list" id="nl-food-list">🍱 Donations</a>
         <a href="#" class="nav-link" data-page="map" id="nl-map">📍 Nearby</a>
@@ -50,20 +74,149 @@
           <span class="notif-badge hidden" id="notif-badge">0</span>
         </a>
       </div>
-      <div class="nav-user" id="nav-user">
+
+      <!-- Public Actions (unauthenticated) -->
+      <div class="nav-user" id="nav-user-public">
+        <button class="btn btn-teal btn-sm" id="nav-get-started-btn">Sign In</button>
+      </div>
+
+      <!-- Private Actions (authenticated) -->
+      <div class="nav-user hidden" id="nav-user-private">
         <span id="nav-username">Guest</span>
         <span class="role-badge" id="nav-role-badge">—</span>
         <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
       </div>
     </nav>
 
+
     <!-- ===== PAGE CONTAINER ===== -->
     <main class="page-container" id="page-container">
 
       <!-- ─────────────────────────────── -->
+      <!--          LANDING PAGE           -->
+      <!-- ─────────────────────────────── -->
+      <section class="page" id="page-landing">
+        <!-- Hero Section -->
+        <div class="landing-hero-section slide-up">
+          <div class="landing-hero-content">
+            <h1 class="landing-hero-title">Connect. Share.<br><span class="highlight-text">Nourish.</span></h1>
+            <p class="landing-hero-subtitle">
+              Servio is a modern community food bridge. We connect hotels, restaurants, and caterers with local NGOs and volunteers to rescue surplus food and route waste to composting centers.
+            </p>
+            <div class="landing-hero-ctas">
+              <button class="btn btn-teal" id="landing-hero-start-btn">Get Started →</button>
+              <a href="#landing-features" class="btn btn-secondary">Learn More</a>
+            </div>
+          </div>
+          <div class="landing-hero-visual">
+            <div class="hero-visual-card">
+              <div class="visual-card-glow"></div>
+              <div class="hero-logo-frame">
+                <img src="logo.png" alt="Servio Logo" class="hero-logo-img" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Impact Section -->
+        <div class="landing-section" id="landing-impact">
+          <div class="landing-section-header">
+            <h2 class="landing-section-title">Making Real-World Impact</h2>
+            <p class="landing-section-subtitle">Real-time statistics demonstrating our platform's environmental and community contribution.</p>
+          </div>
+          <div class="landing-impact-grid">
+            <div class="impact-card">
+              <span class="impact-num" id="land-meals">2,450+</span>
+              <span class="impact-lbl">Meals Shared</span>
+            </div>
+            <div class="impact-card">
+              <span class="impact-num" id="land-kg">840 kg</span>
+              <span class="impact-lbl">Food Rescued</span>
+            </div>
+            <div class="impact-card">
+              <span class="impact-num" id="land-vol">128+</span>
+              <span class="impact-lbl">Active Volunteers</span>
+            </div>
+            <div class="impact-card">
+              <span class="impact-num" id="land-co2">1,260 kg</span>
+              <span class="impact-lbl">CO₂ Prevented</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="landing-section" id="landing-features">
+          <div class="landing-section-header">
+            <h2 class="landing-section-title">Zero Waste. Maximum Care.</h2>
+            <p class="landing-section-subtitle">Designed from the ground up for simplicity, accountability, and seamless coordination.</p>
+          </div>
+          <div class="landing-features-grid">
+            <div class="feature-detail-card">
+              <div class="feature-icon">📤</div>
+              <h3>Post surplus food</h3>
+              <p>Hotels, restaurants, and caterers list surplus food details in seconds. Nearby verified recipient NGOs are notified instantly via intelligent matching.</p>
+            </div>
+            <div class="feature-detail-card">
+              <div class="feature-icon">♻️</div>
+              <h3>Organic composting</h3>
+              <p>Food that cannot be eaten safely is automatically routed to decomposition centers, turning potential methane emissions into nourishing garden compost.</p>
+            </div>
+            <div class="feature-detail-card">
+              <div class="feature-icon">📷</div>
+              <h3>Verified delivery</h3>
+              <p>Volunteers and recipients track deliveries on the live map and upload photographic and notes verification to ensure food reaches the right hands.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div class="landing-section" id="landing-testimonials">
+          <div class="landing-section-header">
+            <h2 class="landing-section-title">Stories from the Field</h2>
+            <p class="landing-section-subtitle">Read how Servio is transforming local businesses and community organizations.</p>
+          </div>
+          <div class="landing-testimonials-grid">
+            <div class="testimonial-card">
+              <p class="testimonial-quote">"Servio completely streamlined our food operations. Instead of throwing away extra buffet meals, we feed 100+ children every single day."</p>
+              <div class="testimonial-author">
+                <div class="author-avatar">🏨</div>
+                <div class="author-info">
+                  <span class="author-name">The Grand Pavilion</span>
+                  <span class="author-role">Hotel Donor Partner</span>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial-card">
+              <p class="testimonial-quote">"As a shelter, food supply was always a source of uncertainty. Servio connects us with fresh, high-quality meals instantly from local donors."</p>
+              <div class="testimonial-author">
+                <div class="author-avatar">🏠</div>
+                <div class="author-info">
+                  <span class="author-name">Hope Care Foundation</span>
+                  <span class="author-role">NGO Recipient Partner</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="landing-footer">
+          <div class="footer-brand">
+            <img src="logo.png" alt="Servio Logo" class="brand-logo-img footer-logo-img" />
+          </div>
+          <p class="footer-desc">Connect. Share. Nourish. Modernizing food redistribution to end waste and support neighborhoods.</p>
+          <div class="footer-meta">
+            <span>© 2026 Servio Technology. All rights reserved.</span>
+            <span>Built for sustainable community impact.</span>
+          </div>
+        </footer>
+      </section>
+
+      <!-- ─────────────────────────────── -->
       <!--           LOGIN PAGE            -->
       <!-- ─────────────────────────────── -->
-      <section class="page" id="page-login">
+      <section class="page hidden" id="page-login">
+
         <div class="auth-wrapper">
           <!-- Ambient Background Elements -->
           <div class="bg-glow bg-glow-1"></div>
@@ -120,28 +273,8 @@
 
           <div class="auth-card slide-up">
             <div class="auth-header">
-              <!-- New Brand Emblem -->
               <div class="auth-logo-container">
-                <svg class="auth-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="32" cy="32" r="30" stroke="url(#logo-ring-grad)" stroke-width="2" stroke-dasharray="4 4" opacity="0.8"/>
-                  <path d="M18 36C18 43.73 24.27 50 32 50C39.73 50 46 43.73 46 36H18Z" fill="url(#logo-bowl-grad)"/>
-                  <path d="M32 16C32 16 26 21 26 26C26 29.31 28.69 32 32 32C35.31 32 38 29.31 38 26C38 21 32 16 32 16Z" fill="url(#logo-heart-grad)"/>
-                  <path d="M32 21.5L33.5 23L32 24.5L30.5 23L32 21.5Z" fill="#FFFFFF"/>
-                  <defs>
-                    <linearGradient id="logo-ring-grad" x1="2" y1="32" x2="62" y2="32" gradientUnits="userSpaceOnUse">
-                      <stop stop-color="#20C7BE"/>
-                      <stop offset="1" stop-color="#FFB45A"/>
-                    </linearGradient>
-                    <linearGradient id="logo-bowl-grad" x1="18" y1="43" x2="46" y2="43" gradientUnits="userSpaceOnUse">
-                      <stop stop-color="#20C7BE"/>
-                      <stop offset="1" stop-color="#18A9A1"/>
-                    </linearGradient>
-                    <linearGradient id="logo-heart-grad" x1="26" y1="24" x2="38" y2="24" gradientUnits="userSpaceOnUse">
-                      <stop stop-color="#FFB45A"/>
-                      <stop offset="1" stop-color="#F59B35"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
+                <img src="logo.png" alt="Servio Logo" class="brand-logo-img auth-logo-img" />
               </div>
               <h2>Welcome to Servio</h2>
               <p>Reducing food waste, one meal at a time.</p>
@@ -392,7 +525,7 @@
                 <h3>📋 Recent Activity</h3>
                 <div id="recent-activity" class="activity-list">
                   <div class="empty-state">
-                    <span class="empty-state-icon">📭</span>
+                    <img src="logo.png" alt="Servio" class="empty-state-logo" />
                     <span>No recent activity.</span>
                   </div>
                 </div>

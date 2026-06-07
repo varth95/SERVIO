@@ -18,12 +18,12 @@ const Notifications = {
     const container = document.getElementById("notif-list");
 
     if (!res.ok) {
-      container.innerHTML = '<p class="empty-state">Failed to load notifications.</p>';
+      container.innerHTML = '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>Failed to load notifications.</span></div>';
       return;
     }
 
     if (!res.data.length) {
-      container.innerHTML = '<p class="empty-state">🔔 No notifications yet.</p>';
+      container.innerHTML = '<div class="empty-state"><img src="logo.png" alt="Servio" class="empty-state-logo" /><span>No notifications yet.</span></div>';
       return;
     }
 
