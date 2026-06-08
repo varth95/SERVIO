@@ -1,5 +1,6 @@
 import os
 import sys
+import socket
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -32,7 +33,11 @@ app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SECURE"] = False  # Set True in production with HTTPS
 
 # Allow CORS with credentials so session cookies work
-CORS(app, supports_credentials=True, origins=["http://localhost:5000", "http://127.0.0.1:5000"])
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[r"^https?://localhost(:\d+)?$", r"^https?://127\.0\.0\.1(:\d+)?$"],
+)
 
 # Register blueprints
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
@@ -61,11 +66,27 @@ def serve_frontend(path):
         return send_from_directory(FRONTEND_DIR, path)
     return send_from_directory(FRONTEND_DIR, "index.html")
 
+def find_available_port(start_port=5000, max_port=5100):
+    for port in range(start_port, max_port + 1):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                sock.bind(("0.0.0.0", port))
+                return port
+            except OSError:
+                continue
+    raise RuntimeError(f"No available port found between {start_port} and {max_port}.")
+
+
 if __name__ == "__main__":
     # Create upload directories
     for folder in ["certificates", "food", "verification"]:
         os.makedirs(os.path.join(UPLOADS_DIR, folder), exist_ok=True)
     init_db()
-    print("\n✅ Servio running at http://localhost:5000\n")
-    port = int(os.environ.get("PORT", 5000))
+    requested_port = int(os.environ.get("PORT", 5000))
+    port = find_available_port(requested_port)
+    if port != requested_port:
+        print(f"\n⚠️ Port {requested_port} is in use. Starting Servio on http://localhost:{port} instead.\n")
+    else:
+        print(f"\n✅ Servio running at http://localhost:{port}\n")
     app.run(debug=False, host="0.0.0.0", port=port)
