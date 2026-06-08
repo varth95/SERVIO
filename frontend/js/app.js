@@ -129,6 +129,16 @@ const App = {
       }
     }
 
+    // Hide Sign In button on auth pages
+    const signInBtn = document.getElementById('nav-get-started-btn');
+    if (signInBtn) {
+      if (pageId === 'login') {
+        signInBtn.style.display = 'none';
+      } else {
+        signInBtn.style.display = '';
+      }
+    }
+
     // Update top nav active state
     document.querySelectorAll('#nav-links-private .nav-link').forEach(link => {
       link.classList.toggle('active', link.dataset.page === pageId);

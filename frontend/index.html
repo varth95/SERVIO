@@ -338,17 +338,11 @@
             <form id="login-form" class="auth-form">
               <div class="form-group">
                 <label>Email</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="mail"></span>
-                  <input type="email" id="login-email" class="with-icon" placeholder="you@example.com" required autocomplete="email" />
-                </div>
+                <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="lock"></span>
-                  <input type="password" id="login-password" class="with-icon" placeholder="••••••••" required autocomplete="current-password" />
-                </div>
+                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
               </div>
               <div class="form-error hidden" id="login-error"></div>
               <button type="submit" class="btn btn-primary btn-full" id="login-submit-btn">Login <span class="btn-icon btn-icon-right" data-icon="arrow-right"></span></button>
@@ -358,50 +352,32 @@
             <form id="register-form" class="auth-form hidden">
               <div class="form-group">
                 <label>Full Name / Organization</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="user"></span>
-                  <input type="text" id="reg-name" class="with-icon" placeholder="Your name or org name" required autocomplete="name" />
-                </div>
+                <input type="text" id="reg-name" placeholder="Your name or org name" required autocomplete="name" />
               </div>
               <div class="form-group">
                 <label>Email</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="mail"></span>
-                  <input type="email" id="reg-email" class="with-icon" placeholder="you@example.com" required autocomplete="email" />
-                </div>
+                <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email" />
               </div>
               <div class="form-group">
                 <label>Password</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="lock"></span>
-                  <input type="password" id="reg-password" class="with-icon" placeholder="Min 6 characters" required autocomplete="new-password" />
-                </div>
+                <input type="password" id="reg-password" placeholder="Min 6 characters" required autocomplete="new-password" />
               </div>
               <div class="form-group">
                 <label>Role</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="users"></span>
-                  <select id="reg-role" class="with-icon" required>
+                <select id="reg-role" required>
                     <option value="">Select your role</option>
                     <option value="donor">Donor (Hotel / Restaurant / Caterer)</option>
                     <option value="recipient">Recipient (NGO / Orphanage / Old Age Home)</option>
                     <option value="individual">Individual (Volunteer / Bridge User)</option>
                   </select>
-                </div>
               </div>
               <div class="form-group" id="reg-phone-group">
                 <label>Phone Number</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="phone"></span>
-                  <input type="tel" id="reg-phone" class="with-icon" placeholder="+91 XXXXX XXXXX" autocomplete="tel" />
-                </div>
+                <input type="tel" id="reg-phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel" />
               </div>
               <div class="form-group">
                 <label>Address</label>
-                <div class="input-icon-group">
-                  <span class="input-icon" data-icon="map-pin"></span>
-                  <input type="text" id="reg-address" class="with-icon" placeholder="Your address" autocomplete="street-address" />
-                </div>
+                <input type="text" id="reg-address" placeholder="Your address" autocomplete="street-address" />
               </div>
               <div class="form-group" id="reg-cert-group" style="display:none">
                 <label>Business Certificate <span class="required">*</span></label>
