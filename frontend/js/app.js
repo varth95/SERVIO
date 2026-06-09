@@ -47,6 +47,7 @@ const App = {
     HeroSlideshow.init();
     ScrollReveal.init();
     App.initModals();
+    App.initCursorEffects();
     App.initHistory();
   },
 
@@ -236,6 +237,25 @@ const App = {
     window.addEventListener('popstate', (event) => {
       const targetPage = event.state && event.state.page ? event.state.page : App.getBackFallback(App.currentPage);
       App.showPage(targetPage, {replaceState: true, fromHistory: true});
+    });
+  },
+
+  initCursorEffects() {
+    const cursorSpot = document.getElementById('ambient-cursor-spot');
+    if (!cursorSpot || window.matchMedia('(pointer: coarse)').matches) return;
+
+    const spotSize = 520;
+    const moveSpot = (x, y) => {
+      cursorSpot.style.transform = `translate3d(${x - spotSize / 2}px, ${y - spotSize / 2}px, 0)`;
+    };
+
+    document.addEventListener('mousemove', (event) => {
+      moveSpot(event.clientX, event.clientY);
+      cursorSpot.style.opacity = '0.52';
+    });
+
+    document.addEventListener('mouseleave', () => {
+      cursorSpot.style.opacity = '0.24';
     });
   },
 
