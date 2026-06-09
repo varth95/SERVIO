@@ -13,10 +13,17 @@ const MapView = {
 
     MapView.map = L.map("map-container").setView([20.5937, 78.9629], 5); // India center
 
-    // OpenStreetMap tile layer (free)
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    // Esri World Imagery satellite tile layer (base)
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+      attribution: 'Tiles &copy; Esri',
       maxZoom: 19,
+    }).addTo(MapView.map);
+
+    // Esri World Topo Map labels overlay (streets, cities, landmarks)
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", {
+      attribution: 'Tiles &copy; Esri',
+      maxZoom: 19,
+      opacity: 0.5,
     }).addTo(MapView.map);
 
     MapView.loadMarkers();

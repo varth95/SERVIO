@@ -419,7 +419,7 @@ h6 {
   left: 0;
   right: 0;
   width: min(1200px, calc(100% - 48px));
-  background: rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.32);
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
   border-radius: 28px;
@@ -1338,7 +1338,7 @@ h6 {
 
 /* ===== CARDS ===== */
 .card {
-  background: rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.32);
   border-radius: var(--r-main);
   padding: var(--pad-card);
   box-shadow: 0 26px 70px rgba(15, 23, 42, 0.12), 0 8px 30px rgba(32, 199, 190, 0.09);
@@ -1781,7 +1781,7 @@ h6 {
 
 /* ── Hero Card ── */
 .hero-card {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.24);
   border: 1.4px solid rgba(255, 255, 255, 0.55);
   border-radius: 44px;
   padding: 36px;
@@ -1902,7 +1902,7 @@ h6 {
 }
 
 .search-bar {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.30);
   border: 2px solid rgba(255, 255, 255, 0.60);
   border-radius: var(--r-search);
   display: flex;
@@ -1984,7 +1984,7 @@ h6 {
   cursor: pointer;
   transition: all 0.28s ease;
   padding: 22px 20px;
-  background: rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.32);
   border: 1.6px solid rgba(255, 255, 255, 0.52);
   border-radius: 22px;
   box-shadow: 0 28px 82px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(32, 199, 190, 0.04);
@@ -2049,7 +2049,7 @@ h6 {
 
 .action-card {
   flex: 1;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.30);
   border-radius: var(--r-main);
   padding: 34px 30px;
   box-shadow: 0 30px 86px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -2090,7 +2090,7 @@ h6 {
 /* Activity Card in Volunteer Row */
 .activity-card {
   flex: 1;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.30);
   border-radius: var(--r-main);
   padding: 34px 30px;
   box-shadow: 0 30px 86px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -2183,7 +2183,7 @@ h6 {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.28);
   border-radius: var(--r-dashboard);
   padding: 34px 24px;
   box-shadow: 0 28px 82px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -2384,7 +2384,7 @@ h6 {
 }
 
 .food-card {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   border-radius: var(--r-lg);
   overflow: hidden;
   box-shadow: 0 20px 52px rgba(15, 23, 42, 0.09);
