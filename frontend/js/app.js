@@ -46,6 +46,7 @@ const App = {
     App.initNavigation();
     HeroSlideshow.init();
     ScrollReveal.init();
+    App.initGlassInteractions();
     App.initModals();
     App.initHistory();
   },
@@ -263,6 +264,79 @@ const App = {
     });
   },
 
+  initGlassInteractions() {
+    const selectors = [
+      '.hero-visual-card',
+      '.impact-card',
+      '.feature-detail-card',
+      '.testimonial-card',
+      '.card',
+      '.quick-action-btn',
+      '.action-card',
+      '.stat-card',
+      '.food-card',
+      '.detail-card',
+      '.notif-item'
+    ].join(',');
+
+    const isTouch = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const attach = (root = document) => {
+      const cards = [];
+      if (root.matches?.(selectors)) cards.push(root);
+      root.querySelectorAll?.(selectors).forEach(card => cards.push(card));
+
+      cards.forEach(card => {
+        if (card.dataset.glassReady === 'true') return;
+        card.dataset.glassReady = 'true';
+        card.classList.add('glass-reactive');
+        card.style.setProperty('--pointer-x', '50%');
+        card.style.setProperty('--pointer-y', '0%');
+        card.style.setProperty('--shine-offset', '0px');
+
+        if (isTouch || reduceMotion) return;
+
+        card.addEventListener('pointermove', event => {
+          const rect = card.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          const px = Math.max(0, Math.min(100, (x / rect.width) * 100));
+          const py = Math.max(0, Math.min(100, (y / rect.height) * 100));
+          const tiltY = ((px - 50) / 50) * 5.2;
+          const tiltX = -((py - 50) / 50) * 4.2;
+          const shineOffset = ((px - 50) / 50) * 18;
+
+          card.style.setProperty('--pointer-x', `${px.toFixed(2)}%`);
+          card.style.setProperty('--pointer-y', `${py.toFixed(2)}%`);
+          card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
+          card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
+          card.style.setProperty('--shine-offset', `${shineOffset.toFixed(2)}px`);
+        }, { passive: true });
+
+        card.addEventListener('pointerleave', () => {
+          card.style.setProperty('--pointer-x', '50%');
+          card.style.setProperty('--pointer-y', '0%');
+          card.style.setProperty('--tilt-x', '0deg');
+          card.style.setProperty('--tilt-y', '0deg');
+          card.style.setProperty('--shine-offset', '0px');
+        });
+      });
+    };
+
+    attach(document);
+
+    const appRoot = document.getElementById('app') || document.body;
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) attach(node);
+        });
+      });
+    });
+    observer.observe(appRoot, { childList: true, subtree: true });
+  },
+
   async loadDashboard() {
     const role = Auth.getRole();
     const user = Auth.currentUser;
@@ -271,6 +345,7 @@ const App = {
     document.getElementById('donor-actions').style.display = role === 'donor' ? 'block' : 'none';
     document.getElementById('recipient-actions').style.display = role === 'recipient' ? 'block' : 'none';
     document.getElementById('individual-actions').style.display = role === 'individual' ? 'block' : 'none';
+    document.querySelector('.dashboard-content')?.classList.toggle('volunteer-dashboard-row', role === 'individual');
 
     // Greeting
     const hour = new Date().getHours();
